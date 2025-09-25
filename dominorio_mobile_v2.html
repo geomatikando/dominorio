@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dominório – 8×8</title>
+  <style>
+    :root{
+      --bg:#0b1020; --panel:#141a2e; --grid:#2a355f;
+      --accent:#6ea8ff; --accent2:#ffb86b; --text:#e6e9f2; --muted:#a8b0c3;
+    }
+    html,body{height:100%;margin:0;background:radial-gradient(1200px 800px at 20% -10%, #1b2352, #0b1020);font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:var(--text)}
+    .page{max-width:980px;margin:24px auto;padding:16px}
+    h1{font-weight:800;letter-spacing:.3px;margin:0 0 6px 0}
+    .sub{color:var(--muted);margin-bottom:16px}
+
+    .wrap{display:grid;grid-template-columns:minmax(260px,1fr) 1fr;gap:20px;align-items:start}
+    @media (max-width:880px){.wrap{grid-template-columns:1fr}}
+
+    .board{
+      width:min(94vw,560px);max-width:560px;aspect-ratio:1/1;height:auto;
+      display:grid;grid-template-columns:repeat(8,1fr);grid-template-rows:repeat(8,1fr);
+      border-radius:18px;padding:8px;box-shadow:0 20px 60px rgba(3,8,28,.5) inset, 0 10px 30px rgba(0,0,0,.35);
+      touch-action:manipulation;-webkit-user-select:none;user-select:none;
+      /* GRID VISUAL EM CSS (funciona mesmo sem JS) */
+      background:
+        /* linhas verticais */ repeating-linear-gradient(to right, var(--grid), var(--grid) 1px, transparent 1px, transparent calc(12.5%)),
+        /* linhas horizontais */ repeating-linear-gradient(to bottom, var(--grid), var(--grid) 1px, transparent 1px, transparent calc(12.5%)),
+        linear-gradient(180deg,#0f1530,#0c1229);
+      position:relative;
+    }
+    .cell{position:relative;isolation:isolate}
+    .domino{position:absolute;inset:0;box-sizing:border-box;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:700;letter-spacing:.8px}
+    .V{background:linear-gradient(180deg, rgba(110,168,255,.18), rgba(110,168,255,.08));border:1px solid rgba(110,168,255,.55)}
+    .H{background:linear-gradient(90deg, rgba(255,184,107,.18), rgba(255,184,107,.08));border:1px solid rgba(255,184,107,.55)}
+
+    .panel{background:var(--panel);border:1px solid var(--grid);border-radius:18px;padding:16px 18px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+    .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:8px 0}
+    select,button{background:#0f1530;border:1px solid var(--grid);color:var(--text);padding:10px 12px;border-radius:12px;font-weight:600}
+    button{cursor:pointer}
+    button:disabled{opacity:.6;cursor:not-allowed}
+
+    .legend{display:flex;gap:10px;align-items:center;margin-top:10px}
+    .swatch{width:18px;height:18px;border-radius:6px}
+    .swatch.v{background:var(--accent)}
+    .swatch.h{background:var(--accent2)}
+
+    .status{font-size:18px;font-weight:700;margin:6px 0 10px}
+    .small{color:var(--muted);font-size:14px}
+    .pill{display:inline-block;padding:6px 10px;border-radius:999px;margin-left:8px}
+    .foot{margin-top:8px;color:var(--muted);font-size:13px}
+    .marker{position:absolute;inset:6px;border:2px dashed rgba(255,255,255,.25);border-radius:10px;pointer-events:none}
+  </style>
+</head>
+<body>
+  <div class="page">
+    <h1>Dominório</h1>
+    <div class="sub">Tabuleiro 8×8. Vertical (V) coloca peças na vertical; Horizontal (H) coloca na horizontal. Perde quem ficar sem jogadas.</div>
+
+    <div class="wrap">
+      <div id="board" class="board" aria-label="Tabuleiro 8 por 8"></div>
+
+      <div class="panel">
+        <div class="row">
+          <label for="side">Jogar como</label>
+          <select id="side">
+            <option value="V">Vertical (V)</option>
+            <option value="H">Horizontal (H)</option>
+          </select>
+          <label for="depth">Dificuldade</label>
+          <select id="depth">
+            <option value="1">Muito fácil</option>
+            <option value="2">Fácil</option>
+            <option value="3" selected>Médio</option>
+            <option value="4">Difícil</option>
+            <option value="5">Muito difícil</option>
+            <option value="perfectV">Impecável (V no 8×8)</option>
+          </select>
+          <button id="new">Novo jogo</button>
+          <button id="undo" title="Anular última jogada">Desfazer</button>
+        </div>
+        <div class="legend">
+          <div class="swatch v"></div> <span>Peças do Vertical</span>
+          <div class="swatch h"></div> <span>Peças do Horizontal</span>
+        </div>
+        <div class="status" id="status">Prepare-se…</div>
+        <div class="small" id="substatus"></div>
+        <div class="foot">Se abrir o ficheiro a partir da app Ficheiros/iCloud, toque em <b>Partilhar → Abrir no Safari</b> para garantir que o JavaScript corre.</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  // Polyfill para Safari antigos que não têm structuredClone
+  if (typeof structuredClone !== 'function') {
+    window.structuredClone = (obj)=> JSON.parse(JSON.stringify(obj));
+  }
+
+  const N = 8; const EMPTY = 0, V=1, H=2;
+  const boardEl = document.getElementById('board');
+  const statusEl = document.getElementById('status');
+  const subEl = document.getElementById('substatus');
+  const sideSel = document.getElementById('side');
+  const depthSel = document.getElementById('depth');
+  const newBtn = document.getElementById('new');
+  const undoBtn = document.getElementById('undo');
+
+  let cells, turn, humanSide, history, lastMove = null, running = true;
+
+  function resetGame(){
+    cells = Array.from({length:N}, ()=>Array(N).fill(EMPTY));
+    history = []; lastMove = null; running = true;
+    humanSide = sideSel.value==='V'? V : H;
+    turn = V;
+    renderBoard();
+    info();
+    maybeComputer();
+  }
+  newBtn.onclick = resetGame;
+  undoBtn.onclick = ()=>{ if(history.length){ const s = history.pop(); ({cells,turn,lastMove,running}=structuredClone(s)); renderBoard(); info(); } };
+
+  function legalMoves(player, st=cells){
+    const moves = [];
+    if(player===V){ for(let r=0;r<N-1;r++) for(let c=0;c<N;c++) if(st[r][c]===EMPTY && st[r+1][c]===EMPTY) moves.push([r,c,r+1,c]); }
+    else { for(let r=0;r<N;r++) for(let c=0;c<N-1;c++) if(st[r][c]===EMPTY && st[r][c+1]===EMPTY) moves.push([r,c,r,c+1]); }
+    return moves;
+  }
+  function applyMove(mv, player, st){ const [r1,c1,r2,c2]=mv; const ns = structuredClone(st); ns[r1][c1]=player; ns[r2][c2]=player; return ns; }
+
+  function evaluate(st){
+    const mV = legalMoves(V,st).length, mH = legalMoves(H,st).length;
+    let singles = 0;
+    for(let r=0;r<N;r++) for(let c=0;c<N;c++){ if(st[r][c]!==EMPTY) continue;
+      const vOk = (r>0 && st[r-1][c]===EMPTY) || (r<N-1 && st[r+1][c]===EMPTY);
+      const hOk = (c>0 && st[r][c-1]===EMPTY) || (c<N-1 && st[r][c+1]===EMPTY);
+      if(!(vOk||hOk)) singles++; }
+    return (mV - mH) * 10 - singles * 2;
+  }
+
+  function aiMove(maxDepth, timeLimitMs=1200){
+    const start = performance.now();
+    let best = null;
+    const moves = ordered(legalMoves(turn,cells));
+    if(!moves.length) return null;
+    const timeUp = ()=> performance.now()-start > timeLimitMs;
+
+    function search(st, depth, alpha, beta, player){
+      const myMoves = legalMoves(player, st);
+      if(!myMoves.length) return player===V? -99999 : 99999;
+      if(depth===0 || timeUp()) return evaluate(st);
+      if(player===V){
+        let val = -Infinity;
+        for(const mv of ordered(myMoves)){
+          const child = applyMove(mv, V, st);
+          val = Math.max(val, search(child, depth-1, alpha, beta, H));
+          alpha = Math.max(alpha, val);
+          if(beta<=alpha || timeUp()) break;
+        } return val;
+      } else {
+        let val = Infinity;
+        for(const mv of ordered(myMoves)){
+          const child = applyMove(mv, H, st);
+          val = Math.min(val, search(child, depth-1, alpha, beta, V));
+          beta = Math.min(beta, val);
+          if(beta<=alpha || timeUp()) break;
+        } return val;
+      }
+    }
+    const maxDepthClamped = Math.max(1, Math.min(6, maxDepth));
+    for(let d=1; d<=maxDepthClamped; d++){
+      if(timeUp()) break;
+      let localBest = moves[0], localScore = -Infinity;
+      for(const mv of moves){
+        if(timeUp()) break;
+        const child = applyMove(mv, turn, cells);
+        const score = (turn===V)? search(child, d-1, -Infinity, Infinity, H) : search(child, d-1, -Infinity, Infinity, V);
+        if(score>localScore){ localScore = score; localBest = mv; }
+      } best = localBest;
+    }
+    return best ?? moves[Math.floor(Math.random()*moves.length)];
+  }
+
+  function isBoardEmpty(){ for(let r=0;r<N;r++) for(let c=0;c<N;c++) if(cells[r][c]!==EMPTY) return false; return true; }
+  function diagMirrorMoveOf([r1,c1,r2,c2]){ return [c1,r1,c2,r2]; }
+  function perfectVMove(){ if(turn!==V) return null; if(isBoardEmpty()) return [3,3,4,3]; if(lastMove){ const mv = diagMirrorMoveOf(lastMove); if(isLegal(mv)) return mv; } return null; }
+
+  function ordered(mvs){ return mvs.sort((a,b)=> centerScore(b)-centerScore(a)); }
+  function centerScore(mv){ const [r1,c1,r2,c2]=mv; const r=(r1+r2)/2, c=(c1+c2)/2; const dr=Math.abs(r-(N-1)/2), dc=Math.abs(c-(N-1)/2); return -(dr+dc); }
+
+  function renderBoard(){
+    boardEl.innerHTML = '';
+    for(let r=0;r<N;r++) for(let c=0;c<N;c++){
+      const cell = document.createElement('div'); cell.className='cell'; cell.dataset.r=r; cell.dataset.c=c;
+      if(lastMove){ const [r1,c1,r2,c2]=lastMove; if((r===r1 && c===c1)||(r===r2 && c===c2)){ const m=document.createElement('div'); m.className='marker'; cell.appendChild(m);} }
+      if(cells[r][c]!==EMPTY){ const d=document.createElement('div'); d.className='domino '+(cells[r][c]===V?'V':'H'); d.textContent=(cells[r][c]===V?'V':'H'); cell.appendChild(d); }
+      cell.addEventListener('click', handleClick); // tap funciona em iOS
+      boardEl.appendChild(cell);
+    }
+  }
+
+  function isLegal([r1,c1,r2,c2]){
+    if(r1<0||r1>=N||c1<0||c1>=N||r2<0||r2>=N||c2<0||c2>=N) return false;
+    if(cells[r1][c1]!==EMPTY || cells[r2][c2]!==EMPTY) return false;
+    if(turn===V && c1===c2 && r2===r1+1) return true;
+    if(turn===H && r1===r2 && c2===c1+1) return true;
+    return false;
+  }
+
+  function handleClick(e){
+    if(!running || turn!==humanSide) return;
+    const r = +e.currentTarget.dataset.r, c = +e.currentTarget.dataset.c;
+    const mv = humanSide===V? [r,c,r+1,c] : [r,c,r,c+1];
+    if(!isLegal(mv)) return;
+    pushHistory();
+    placeMove(mv, humanSide);
+    renderBoard();
+    info();
+    maybeComputer();
+  }
+
+  function pushHistory(){ history.push(structuredClone({cells,turn,lastMove,running})); if(history.length>30) history.shift(); }
+  function placeMove(mv, player){
+    const [r1,c1,r2,c2]=mv; cells[r1][c1]=player; cells[r2][c2]=player; lastMove=mv; turn=(player===V?H:V);
+    const nextMoves = legalMoves(turn,cells);
+    if(nextMoves.length===0){ running=false; const winner = player===V? 'Vertical (V)':'Horizontal (H)'; statusEl.innerHTML = `Fim de jogo: <span class="pill" style="background:rgba(124,242,156,.15);border:1px solid rgba(124,242,156,.6)">${winner} venceu</span>`; subEl.textContent=''; }
+  }
+  function info(){ if(!running) return; const mvCount = legalMoves(turn,cells).length; const who = turn===V? 'Vertical (V)':'Horizontal (H)'; statusEl.textContent=`Vez do ${who}`; subEl.textContent=`Jogadas disponíveis: ${mvCount}`; undoBtn.disabled = history.length===0; }
+  async function maybeComputer(){
+    if(!running) return;
+    if(turn!==humanSide){
+      await new Promise(r=>setTimeout(r, 200));
+      const mode = depthSel.value;
+      if(mode==='perfectV' && humanSide===H && turn===V){ let mv = perfectVMove(); if(!mv){ mv = aiMove(4,1200);} if(mv){ placeMove(mv,turn); renderBoard(); info(); if(running && turn!==humanSide) maybeComputer(); } return; }
+      const depth = parseInt(mode,10); subEl.textContent='A pensar…';
+      const mv = aiMove(depth, depth<=2? 500 : depth===3? 900 : depth===4? 1400 : 1800);
+      if(mv){ placeMove(mv,turn); renderBoard(); info(); if(running && turn!==humanSide) maybeComputer(); }
+    }
+  }
+
+  resetGame();
+  sideSel.addEventListener('change', resetGame);
+  </script>
+</body>
+</html>
