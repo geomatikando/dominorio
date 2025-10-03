@@ -6,9 +6,11 @@
   <title>Dominório – 8×8</title>
   <style>
     :root{
-      --bg:#0b1020; --panel:#141a2e; --grid:#2a355f;
-      --accent:#6ea8ff; --accent2:#ffb86b; --text:#e6e9f2; --muted:#a8b0c3;
-    }
+  --bg:#0b1020; --panel:#141a2e; --grid:#2a355f;
+  --accent:#6ea8ff; --accent2:#ffb86b; --text:#e6e9f2; --muted:#a8b0c3;
+  /* NOVO: margem dentro de cada célula (ajusta entre 4–7px se quiseres) */
+  --cell-pad: 5px;
+}
     html,body{height:100%;margin:0;background:radial-gradient(1200px 800px at 20% -10%, #1b2352, #0b1020);font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:var(--text)}
     .page{max-width:980px;margin:24px auto;padding:16px}
     h1{font-weight:800;letter-spacing:.3px;margin:0 0 6px 0}
@@ -29,8 +31,22 @@
         linear-gradient(180deg,#0f1530,#0c1229);
       position:relative;
     }
-    .cell{position:relative;isolation:isolate}
-    .domino{position:absolute;inset:0;box-sizing:border-box;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:700;letter-spacing:.8px}
+    .cell{
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;          /* NOVO: corta qualquer bleed da peça */
+}
+   .domino{
+  position: absolute;
+  top:    var(--cell-pad);   /* NOVO */
+  right:  var(--cell-pad);   /* NOVO */
+  bottom: var(--cell-pad);   /* NOVO */
+  left:   var(--cell-pad);   /* NOVO */
+  box-sizing: border-box;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; letter-spacing: .8px;
+}
     .V{background:linear-gradient(180deg, rgba(110,168,255,.18), rgba(110,168,255,.08));border:1px solid rgba(110,168,255,.55)}
     .H{background:linear-gradient(90deg, rgba(255,184,107,.18), rgba(255,184,107,.08));border:1px solid rgba(255,184,107,.55)}
 
@@ -49,7 +65,13 @@
     .small{color:var(--muted);font-size:14px}
     .pill{display:inline-block;padding:6px 10px;border-radius:999px;margin-left:8px}
     .foot{margin-top:8px;color:var(--muted);font-size:13px}
-    .marker{position:absolute;inset:6px;border:2px dashed rgba(255,255,255,.25);border-radius:10px;pointer-events:none}
+    .marker{
+  position: absolute;
+  inset: var(--cell-pad);    /* NOVO */
+  border: 2px dashed rgba(255,255,255,.25);
+  border-radius: 10px;
+  pointer-events: none;
+}
   </style>
 </head>
 <body>
