@@ -6,11 +6,10 @@
   <title>Dominório – 8×8</title>
   <style>
     :root{
-  --bg:#0b1020; --panel:#141a2e; --grid:#2a355f;
-  --accent:#6ea8ff; --accent2:#ffb86b; --text:#e6e9f2; --muted:#a8b0c3;
-  /* NOVO: margem dentro de cada célula (ajusta entre 4–7px se quiseres) */
-  --cell-pad: 5px;
-}
+      --bg:#0b1020; --panel:#141a2e; --grid:#2a355f;
+      --accent:#6ea8ff; --accent2:#ffb86b; --text:#e6e9f2; --muted:#a8b0c3;
+      --cell-pad:5px; /* margem interna da peça para encaixar */
+    }
     html,body{height:100%;margin:0;background:radial-gradient(1200px 800px at 20% -10%, #1b2352, #0b1020);font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:var(--text)}
     .page{max-width:980px;margin:24px auto;padding:16px}
     h1{font-weight:800;letter-spacing:.3px;margin:0 0 6px 0}
@@ -24,29 +23,18 @@
       display:grid;grid-template-columns:repeat(8,1fr);grid-template-rows:repeat(8,1fr);
       border-radius:18px;padding:8px;box-shadow:0 20px 60px rgba(3,8,28,.5) inset, 0 10px 30px rgba(0,0,0,.35);
       touch-action:manipulation;-webkit-user-select:none;user-select:none;
-      /* GRID VISUAL EM CSS (funciona mesmo sem JS) */
       background:
-        /* linhas verticais */ repeating-linear-gradient(to right, var(--grid), var(--grid) 1px, transparent 1px, transparent calc(12.5%)),
-        /* linhas horizontais */ repeating-linear-gradient(to bottom, var(--grid), var(--grid) 1px, transparent 1px, transparent calc(12.5%)),
+        repeating-linear-gradient(to right, var(--grid), var(--grid) 1px, transparent 1px, transparent calc(12.5%)),
+        repeating-linear-gradient(to bottom, var(--grid), var(--grid) 1px, transparent 1px, transparent calc(12.5%)),
         linear-gradient(180deg,#0f1530,#0c1229);
       position:relative;
     }
-    .cell{
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;          /* NOVO: corta qualquer bleed da peça */
-}
-   .domino{
-  position: absolute;
-  top:    var(--cell-pad);   /* NOVO */
-  right:  var(--cell-pad);   /* NOVO */
-  bottom: var(--cell-pad);   /* NOVO */
-  left:   var(--cell-pad);   /* NOVO */
-  box-sizing: border-box;
-  border-radius: 10px;
-  display: flex; align-items: center; justify-content: center;
-  font-weight: 700; letter-spacing: .8px;
-}
+    .cell{position:relative;isolation:isolate;overflow:hidden}
+    .domino{
+      position:absolute;
+      top:var(--cell-pad); right:var(--cell-pad); bottom:var(--cell-pad); left:var(--cell-pad);
+      box-sizing:border-box;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:700;letter-spacing:.8px
+    }
     .V{background:linear-gradient(180deg, rgba(110,168,255,.18), rgba(110,168,255,.08));border:1px solid rgba(110,168,255,.55)}
     .H{background:linear-gradient(90deg, rgba(255,184,107,.18), rgba(255,184,107,.08));border:1px solid rgba(255,184,107,.55)}
 
@@ -64,14 +52,7 @@
     .status{font-size:18px;font-weight:700;margin:6px 0 10px}
     .small{color:var(--muted);font-size:14px}
     .pill{display:inline-block;padding:6px 10px;border-radius:999px;margin-left:8px}
-    .foot{margin-top:8px;color:var(--muted);font-size:13px}
-    .marker{
-  position: absolute;
-  inset: var(--cell-pad);    /* NOVO */
-  border: 2px dashed rgba(255,255,255,.25);
-  border-radius: 10px;
-  pointer-events: none;
-}
+    .marker{position:absolute;inset:var(--cell-pad);border:2px dashed rgba(255,255,255,.25);border-radius:10px;pointer-events:none}
   </style>
 </head>
 <body>
@@ -89,6 +70,7 @@
             <option value="V">Vertical (V)</option>
             <option value="H">Horizontal (H)</option>
           </select>
+
           <label for="depth">Dificuldade</label>
           <select id="depth">
             <option value="1">Muito fácil</option>
@@ -98,22 +80,25 @@
             <option value="5">Muito difícil</option>
             <option value="perfectV">Impecável (V no 8×8)</option>
           </select>
+
           <button id="new">Novo jogo</button>
           <button id="undo" title="Anular última jogada">Desfazer</button>
+          <!-- NOVO: botão 2 jogadores -->
+          <button id="twoBtn" title="Ativa/Desativa 2 jogadores">2 Jogadores: OFF</button>
         </div>
+
         <div class="legend">
           <div class="swatch v"></div> <span>Peças do Vertical</span>
           <div class="swatch h"></div> <span>Peças do Horizontal</span>
         </div>
         <div class="status" id="status">Prepare-se…</div>
         <div class="small" id="substatus"></div>
-        <div class="foot">Se abrir o ficheiro a partir da app Ficheiros/iCloud, toque em <b>Partilhar → Abrir no Safari</b> para garantir que o JavaScript corre.</div>
+        <!-- REMOVIDO o texto “Abrir no Safari” -->
       </div>
     </div>
   </div>
 
   <script>
-  // Polyfill para Safari antigos que não têm structuredClone
   if (typeof structuredClone !== 'function') {
     window.structuredClone = (obj)=> JSON.parse(JSON.stringify(obj));
   }
@@ -126,8 +111,10 @@
   const depthSel = document.getElementById('depth');
   const newBtn = document.getElementById('new');
   const undoBtn = document.getElementById('undo');
+  const twoBtn = document.getElementById('twoBtn');
 
   let cells, turn, humanSide, history, lastMove = null, running = true;
+  let twoPlayers = false;
 
   function resetGame(){
     cells = Array.from({length:N}, ()=>Array(N).fill(EMPTY));
@@ -140,6 +127,16 @@
   }
   newBtn.onclick = resetGame;
   undoBtn.onclick = ()=>{ if(history.length){ const s = history.pop(); ({cells,turn,lastMove,running}=structuredClone(s)); renderBoard(); info(); } };
+
+  // alternar 2 jogadores
+  twoBtn.onclick = ()=>{
+    twoPlayers = !twoPlayers;
+    twoBtn.textContent = twoPlayers ? "2 Jogadores: ON" : "2 Jogadores: OFF";
+    // desativar seletores quando ON
+    sideSel.disabled = twoPlayers;
+    depthSel.disabled = twoPlayers;
+    info();
+  };
 
   function legalMoves(player, st=cells){
     const moves = [];
@@ -215,7 +212,7 @@
       const cell = document.createElement('div'); cell.className='cell'; cell.dataset.r=r; cell.dataset.c=c;
       if(lastMove){ const [r1,c1,r2,c2]=lastMove; if((r===r1 && c===c1)||(r===r2 && c===c2)){ const m=document.createElement('div'); m.className='marker'; cell.appendChild(m);} }
       if(cells[r][c]!==EMPTY){ const d=document.createElement('div'); d.className='domino '+(cells[r][c]===V?'V':'H'); d.textContent=(cells[r][c]===V?'V':'H'); cell.appendChild(d); }
-      cell.addEventListener('click', handleClick); // tap funciona em iOS
+      cell.addEventListener('click', handleClick);
       boardEl.appendChild(cell);
     }
   }
@@ -229,30 +226,49 @@
   }
 
   function handleClick(e){
-    if(!running || turn!==humanSide) return;
+    if(!running) return;
     const r = +e.currentTarget.dataset.r, c = +e.currentTarget.dataset.c;
+
+    // MODO 2 JOGADORES: jogada segue o jogador da vez
+    if(twoPlayers){
+      const mv = (turn===V)? [r,c,r+1,c] : [r,c,r,c+1];
+      if(!isLegal(mv)) return;
+      pushHistory(); placeMove(mv, turn); renderBoard(); info();
+      return;
+    }
+
+    // VS COMPUTADOR
+    if(turn!==humanSide) return;
     const mv = humanSide===V? [r,c,r+1,c] : [r,c,r,c+1];
     if(!isLegal(mv)) return;
-    pushHistory();
-    placeMove(mv, humanSide);
-    renderBoard();
-    info();
-    maybeComputer();
+    pushHistory(); placeMove(mv, humanSide); renderBoard(); info(); maybeComputer();
   }
 
-  function pushHistory(){ history.push(structuredClone({cells,turn,lastMove,running})); if(history.length>30) history.shift(); }
+  function pushHistory(){ history.push(structuredClone({cells,turn,lastMove,running,twoPlayers})); if(history.length>30) history.shift(); }
   function placeMove(mv, player){
     const [r1,c1,r2,c2]=mv; cells[r1][c1]=player; cells[r2][c2]=player; lastMove=mv; turn=(player===V?H:V);
     const nextMoves = legalMoves(turn,cells);
     if(nextMoves.length===0){ running=false; const winner = player===V? 'Vertical (V)':'Horizontal (H)'; statusEl.innerHTML = `Fim de jogo: <span class="pill" style="background:rgba(124,242,156,.15);border:1px solid rgba(124,242,156,.6)">${winner} venceu</span>`; subEl.textContent=''; }
   }
-  function info(){ if(!running) return; const mvCount = legalMoves(turn,cells).length; const who = turn===V? 'Vertical (V)':'Horizontal (H)'; statusEl.textContent=`Vez do ${who}`; subEl.textContent=`Jogadas disponíveis: ${mvCount}`; undoBtn.disabled = history.length===0; }
-  async function maybeComputer(){
+  function info(){
     if(!running) return;
+    const mvCount = legalMoves(turn,cells).length;
+    const who = turn===V? 'Vertical (V)':'Horizontal (H)';
+    statusEl.textContent = `Vez do ${who}` + (twoPlayers ? ' — modo 2 jogadores' : '');
+    subEl.textContent = `Jogadas disponíveis: ${mvCount}`;
+    undoBtn.disabled = history.length===0;
+  }
+
+  async function maybeComputer(){
+    if(!running || twoPlayers) return;           // sem computador no modo 2P
     if(turn!==humanSide){
       await new Promise(r=>setTimeout(r, 200));
       const mode = depthSel.value;
-      if(mode==='perfectV' && humanSide===H && turn===V){ let mv = perfectVMove(); if(!mv){ mv = aiMove(4,1200);} if(mv){ placeMove(mv,turn); renderBoard(); info(); if(running && turn!==humanSide) maybeComputer(); } return; }
+      if(mode==='perfectV' && humanSide===H && turn===V){
+        let mv = perfectVMove(); if(!mv){ mv = aiMove(4,1200); }
+        if(mv){ placeMove(mv,turn); renderBoard(); info(); if(running && turn!==humanSide) maybeComputer(); }
+        return;
+      }
       const depth = parseInt(mode,10); subEl.textContent='A pensar…';
       const mv = aiMove(depth, depth<=2? 500 : depth===3? 900 : depth===4? 1400 : 1800);
       if(mv){ placeMove(mv,turn); renderBoard(); info(); if(running && turn!==humanSide) maybeComputer(); }
@@ -260,7 +276,7 @@
   }
 
   resetGame();
-  sideSel.addEventListener('change', resetGame);
+  sideSel.addEventListener('change', ()=>{ if(!twoPlayers){ resetGame(); }});
   </script>
 </body>
 </html>
