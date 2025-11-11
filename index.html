@@ -1,282 +1,1390 @@
-<!DOCTYPE html>
-<html lang="pt-PT">
+@media (max-width: 767px) and (orientation: landscape) {
+            .container {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 20px;
+                margin-bottom: 8px;
+            }
+            
+            .info-panel {
+                padding: 8px;
+                margin-bottom: 10px;
+            }
+            
+            .current-player {
+                font-size: 16px;
+                margin-bottom: 5px;
+            }
+            
+            .instructions {
+                font-size: 12px;
+            }
+            
+            .board {
+                width: min(300px, 50vh);
+            }
+            
+            .buttons {
+                margin-top: 10px;
+                gap: 5px;
+            }
+            
+            button {
+                padding: 8px 15px;
+                font-size: 13px;
+                min-height: 38px;
+            }
+        }<!DOCTYPE html>
+<html lang="pt">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Dominório – 8×8</title>
-  <style>
-    :root{
-      --bg:#0b1020; --panel:#141a2e; --grid:#2a355f;
-      --accent:#6ea8ff; --accent2:#ffb86b; --text:#e6e9f2; --muted:#a8b0c3;
-      --cell-pad:5px; /* margem interna da peça para encaixar */
-    }
-    html,body{height:100%;margin:0;background:radial-gradient(1200px 800px at 20% -10%, #1b2352, #0b1020);font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:var(--text)}
-    .page{max-width:980px;margin:24px auto;padding:16px}
-    h1{font-weight:800;letter-spacing:.3px;margin:0 0 6px 0}
-    .sub{color:var(--muted);margin-bottom:16px}
-
-    .wrap{display:grid;grid-template-columns:minmax(260px,1fr) 1fr;gap:20px;align-items:start}
-    @media (max-width:880px){.wrap{grid-template-columns:1fr}}
-
-    .board{
-      width:min(94vw,560px);max-width:560px;aspect-ratio:1/1;height:auto;
-      display:grid;grid-template-columns:repeat(8,1fr);grid-template-rows:repeat(8,1fr);
-      border-radius:18px;padding:8px;box-shadow:0 20px 60px rgba(3,8,28,.5) inset, 0 10px 30px rgba(0,0,0,.35);
-      touch-action:manipulation;-webkit-user-select:none;user-select:none;
-      background:
-        repeating-linear-gradient(to right, var(--grid), var(--grid) 1px, transparent 1px, transparent calc(12.5%)),
-        repeating-linear-gradient(to bottom, var(--grid), var(--grid) 1px, transparent 1px, transparent calc(12.5%)),
-        linear-gradient(180deg,#0f1530,#0c1229);
-      position:relative;
-    }
-    .cell{position:relative;isolation:isolate;overflow:hidden}
-    .domino{
-      position:absolute;
-      top:var(--cell-pad); right:var(--cell-pad); bottom:var(--cell-pad); left:var(--cell-pad);
-      box-sizing:border-box;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:700;letter-spacing:.8px
-    }
-    .V{background:linear-gradient(180deg, rgba(110,168,255,.18), rgba(110,168,255,.08));border:1px solid rgba(110,168,255,.55)}
-    .H{background:linear-gradient(90deg, rgba(255,184,107,.18), rgba(255,184,107,.08));border:1px solid rgba(255,184,107,.55)}
-
-    .panel{background:var(--panel);border:1px solid var(--grid);border-radius:18px;padding:16px 18px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
-    .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:8px 0}
-    select,button{background:#0f1530;border:1px solid var(--grid);color:var(--text);padding:10px 12px;border-radius:12px;font-weight:600}
-    button{cursor:pointer}
-    button:disabled{opacity:.6;cursor:not-allowed}
-
-    .legend{display:flex;gap:10px;align-items:center;margin-top:10px}
-    .swatch{width:18px;height:18px;border-radius:6px}
-    .swatch.v{background:var(--accent)}
-    .swatch.h{background:var(--accent2)}
-
-    .status{font-size:18px;font-weight:700;margin:6px 0 10px}
-    .small{color:var(--muted);font-size:14px}
-    .pill{display:inline-block;padding:6px 10px;border-radius:999px;margin-left:8px}
-    .marker{position:absolute;inset:var(--cell-pad);border:2px dashed rgba(255,255,255,.25);border-radius:10px;pointer-events:none}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Quelhas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 10px;
+            margin: 0;
+        }
+        
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            max-width: 100%;
+            width: 100%;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #333;
+            font-size: 28px;
+        }
+        
+        @media (min-width: 768px) {
+            .container {
+                padding: 30px;
+                width: auto;
+            }
+            
+            h1 {
+                font-size: 36px;
+                margin-bottom: 20px;
+            }
+        }
+        
+        .menu-screen {
+            text-align: center;
+            padding: 10px;
+        }
+        
+        .menu-screen h2 {
+            margin-bottom: 20px;
+            color: #667eea;
+            font-size: 22px;
+        }
+        
+        .mode-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+        
+        .mode-btn, .rules-btn {
+            padding: 15px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 8px;
+            background: #667eea;
+            color: white;
+            transition: all 0.3s;
+            font-weight: bold;
+            touch-action: manipulation;
+            min-height: 50px;
+        }
+        
+        @media (min-width: 768px) {
+            .menu-screen {
+                padding: 20px;
+            }
+            
+            .menu-screen h2 {
+                margin-bottom: 30px;
+                font-size: 28px;
+            }
+            
+            .mode-buttons {
+                gap: 15px;
+            }
+            
+            .mode-btn, .rules-btn {
+                padding: 15px 30px;
+                font-size: 18px;
+            }
+        }
+        
+        .mode-btn:hover, .rules-btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .rules-btn {
+            background: #9E9E9E;
+            margin-top: 10px;
+        }
+        
+        .rules-btn:hover {
+            background: #757575;
+        }
+        
+        .game-screen {
+            display: none;
+        }
+        
+        .game-screen.active {
+            display: block;
+        }
+        
+        .info-panel {
+            text-align: center;
+            margin-bottom: 15px;
+            padding: 12px;
+            background: #f0f0f0;
+            border-radius: 10px;
+        }
+        
+        .current-player {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #667eea;
+        }
+        
+        .instructions {
+            font-size: 13px;
+            color: #666;
+            margin-top: 8px;
+            line-height: 1.4;
+        }
+        
+        @media (min-width: 768px) {
+            .info-panel {
+                margin-bottom: 20px;
+                padding: 15px;
+            }
+            
+            .current-player {
+                font-size: 20px;
+                margin-bottom: 10px;
+            }
+            
+            .instructions {
+                font-size: 14px;
+                margin-top: 10px;
+            }
+        }
+        
+        .ai-thinking {
+            color: #FF9800;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        
+        .board {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            grid-template-rows: repeat(10, 1fr);
+            gap: 0;
+            border: 2px solid #333;
+            margin: 0 auto;
+            background: #fff;
+            max-width: 100%;
+            aspect-ratio: 1;
+            width: min(500px, 100vw - 40px);
+        }
+        
+        .cell {
+            width: 100%;
+            height: 100%;
+            border: 1px solid #ccc;
+            background: white;
+            cursor: pointer;
+            position: relative;
+            transition: background 0.2s;
+            touch-action: manipulation;
+        }
+        
+        @media (max-width: 767px) {
+            .board {
+                width: min(350px, calc(100vw - 40px));
+            }
+        }
+        
+        @media (max-width: 380px) {
+            .board {
+                width: calc(100vw - 30px);
+            }
+            
+            .container {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+        }
+        
+        .cell:hover:not(.occupied) {
+            background: #e0e0ff;
+        }
+        
+        @media (hover: none) {
+            .cell:hover:not(.occupied) {
+                background: white;
+            }
+        }
+        
+        .cell.preview {
+            background: #b0d4ff !important;
+        }
+        
+        .cell.occupied {
+            background: #333;
+            cursor: not-allowed;
+        }
+        
+        .cell.occupied::after {
+            content: '';
+            position: absolute;
+            background: white;
+        }
+        
+        .cell.vertical::after {
+            width: 3px;
+            height: 70%;
+            left: 50%;
+            top: 15%;
+            transform: translateX(-50%);
+        }
+        
+        .cell.horizontal::after {
+            width: 70%;
+            height: 3px;
+            top: 50%;
+            left: 15%;
+            transform: translateY(-50%);
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            padding: 12px 20px;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            transition: all 0.3s;
+            font-weight: bold;
+            touch-action: manipulation;
+            min-height: 44px;
+        }
+        
+        @media (min-width: 768px) {
+            .buttons {
+                gap: 10px;
+                margin-top: 20px;
+                flex-wrap: nowrap;
+            }
+            
+            button {
+                padding: 12px 24px;
+                font-size: 16px;
+            }
+        }
+        
+        .confirm-btn {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .confirm-btn:hover:not(:disabled) {
+            background: #45a049;
+        }
+        
+        .cancel-btn {
+            background: #f44336;
+            color: white;
+        }
+        
+        .cancel-btn:hover {
+            background: #da190b;
+        }
+        
+        .reset-btn {
+            background: #2196F3;
+            color: white;
+        }
+        
+        .reset-btn:hover {
+            background: #0b7dda;
+        }
+        
+        .back-btn {
+            background: #9E9E9E;
+            color: white;
+        }
+        
+        .back-btn:hover {
+            background: #757575;
+        }
+        
+        .swap-btn {
+            background: #FF9800;
+            color: white;
+        }
+        
+        .swap-btn:hover {
+            background: #e68900;
+        }
+        
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .game-over {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .game-over.show {
+            display: flex;
+        }
+        
+        .game-over-content, .rules-content {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+        
+        .rules-content {
+            text-align: left;
+        }
+        
+        .rules-content h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 24px;
+            text-align: center;
+        }
+        
+        .rules-content h3 {
+            color: #667eea;
+            margin-top: 15px;
+            margin-bottom: 8px;
+            font-size: 18px;
+        }
+        
+        .rules-content p, .rules-content ul {
+            margin-bottom: 12px;
+            line-height: 1.5;
+            color: #333;
+            font-size: 14px;
+        }
+        
+        @media (min-width: 768px) {
+            .game-over-content {
+                max-width: 400px;
+                padding: 40px;
+            }
+            
+            .rules-content {
+                max-width: 600px;
+                max-height: 80vh;
+                padding: 40px;
+            }
+            
+            .rules-content h2 {
+                margin-bottom: 20px;
+                font-size: 28px;
+            }
+            
+            .rules-content h3 {
+                margin-top: 20px;
+                margin-bottom: 10px;
+                font-size: 20px;
+            }
+            
+            .rules-content p, .rules-content ul {
+                margin-bottom: 15px;
+                line-height: 1.6;
+                font-size: 16px;
+            }
+        }
+        
+        .rules-content ul {
+            padding-left: 20px;
+        }
+        
+        .rules-content li {
+            margin-bottom: 6px;
+        }
+        
+        @media (min-width: 768px) {
+            .rules-content li {
+                margin-bottom: 8px;
+            }
+        }
+        
+        .rules-content strong {
+            color: #667eea;
+        }
+        
+        .game-over-content h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+        
+        .game-over-content p {
+            margin-bottom: 15px;
+            font-size: 16px;
+            line-height: 1.4;
+        }
+        
+        @media (min-width: 768px) {
+            .game-over-content h2 {
+                margin-bottom: 20px;
+                font-size: 28px;
+            }
+            
+            .game-over-content p {
+                margin-bottom: 20px;
+                font-size: 18px;
+            }
+        }
+        
+        .rules-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .rules-modal.show {
+            display: flex;
+        }
+    </style>
 </head>
 <body>
-  <div class="page">
-    <h1>Dominório</h1>
-    <div class="sub">Tabuleiro 8×8. Vertical (V) coloca peças na vertical; Horizontal (H) coloca na horizontal. Perde quem ficar sem jogadas.</div>
-
-    <div class="wrap">
-      <div id="board" class="board" aria-label="Tabuleiro 8 por 8"></div>
-
-      <div class="panel">
-        <div class="row">
-          <label for="side">Jogar como</label>
-          <select id="side">
-            <option value="V">Vertical (V)</option>
-            <option value="H">Horizontal (H)</option>
-          </select>
-
-          <label for="depth">Dificuldade</label>
-          <select id="depth">
-            <option value="1">Muito fácil</option>
-            <option value="2">Fácil</option>
-            <option value="3" selected>Médio</option>
-            <option value="4">Difícil</option>
-            <option value="5">Muito difícil</option>
-            <option value="perfectV">Impecável (V no 8×8)</option>
-          </select>
-
-          <button id="new">Novo jogo</button>
-          <button id="undo" title="Anular última jogada">Desfazer</button>
-          <!-- NOVO: botão 2 jogadores -->
-          <button id="twoBtn" title="Ativa/Desativa 2 jogadores">2 Jogadores: OFF</button>
+    <div class="container">
+        <h1>QUELHAS</h1>
+        
+        <div class="menu-screen" id="menuScreen">
+            <h2>Escolha o Modo de Jogo</h2>
+            <div class="mode-buttons">
+                <button class="rules-btn" onclick="showRules()">📖 Regras do Jogo</button>
+                <button class="mode-btn" onclick="startGame('pvp')">Dois Jogadores</button>
+                <button class="mode-btn" onclick="startGame('ai-easy')">vs IA - Nível 1 (Fácil)</button>
+                <button class="mode-btn" onclick="startGame('ai-medium')">vs IA - Nível 2 (Médio)</button>
+            </div>
         </div>
-
-        <div class="legend">
-          <div class="swatch v"></div> <span>Peças do Vertical</span>
-          <div class="swatch h"></div> <span>Peças do Horizontal</span>
+        
+        <div class="game-screen" id="gameScreen">
+            <div class="info-panel">
+                <div class="current-player" id="currentPlayer">Vez do 1º Jogador</div>
+                <div class="instructions" id="instructions">
+                    Clique nas células para selecionar onde colocar as peças (mínimo 2 adjacentes)
+                </div>
+                <div class="ai-thinking" id="aiThinking" style="display:none;">IA a pensar...</div>
+            </div>
+            
+            <div class="board" id="board"></div>
+            
+            <div class="buttons">
+                <button class="cancel-btn" id="cancelBtn" style="display:none;">Cancelar</button>
+                <button class="confirm-btn" id="confirmBtn" disabled>Confirmar Jogada</button>
+                <button class="swap-btn" id="swapBtn" style="display:none;">Trocar Orientações</button>
+                <button class="reset-btn" id="resetBtn">Novo Jogo</button>
+                <button class="back-btn" id="backBtn" onclick="backToMenu()">Menu</button>
+            </div>
         </div>
-        <div class="status" id="status">Prepare-se…</div>
-        <div class="small" id="substatus"></div>
-        <!-- REMOVIDO o texto “Abrir no Safari” -->
-      </div>
     </div>
-  </div>
+    
+    <div class="game-over" id="gameOver">
+        <div class="game-over-content">
+            <h2>Fim de Jogo!</h2>
+            <p id="winnerText"></p>
+            <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
+                <button class="reset-btn" onclick="resetGame()">Jogar Novamente</button>
+                <button class="back-btn" onclick="backToMenu()">Menu Principal</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="rules-modal" id="rulesModal">
+        <div class="rules-content">
+            <h2>📖 Regras do Quelhas</h2>
+            
+            <h3>Objetivo</h3>
+            <p><strong>Perde o jogador que realizar a última jogada!</strong></p>
+            
+            <h3>Material</h3>
+            <ul>
+                <li>Tabuleiro quadrado 10×10</li>
+                <li>100 peças pretas com uma risca branca</li>
+            </ul>
+            
+            <h3>Jogadores</h3>
+            <p>Existem dois jogadores:</p>
+            <ul>
+                <li><strong>1º Jogador (Vertical)</strong> - Coloca peças com risca vertical</li>
+                <li><strong>2º Jogador (Horizontal)</strong> - Coloca peças com risca horizontal</li>
+            </ul>
+            
+            <h3>Como Jogar</h3>
+            <p>Os jogadores alternam turnos, começando pelo 1º Jogador:</p>
+            <ul>
+                <li>Cada jogada consiste em colocar <strong>duas ou mais peças</strong> em casas livres do tabuleiro</li>
+                <li>As peças devem estar <strong>ortogonalmente contíguas</strong> (coladas umas às outras)</li>
+                <li>O <strong>1º Jogador</strong> só pode colocar peças verticalmente (na mesma coluna)</li>
+                <li>O <strong>2º Jogador</strong> só pode colocar peças horizontalmente (na mesma linha)</li>
+            </ul>
+            
+            <h3>Regra Especial</h3>
+            <p>Na sua primeira jogada, o 2º Jogador pode optar por <strong>trocar orientações</strong>:</p>
+            <ul>
+                <li>Aproveita a jogada do adversário como sendo sua</li>
+                <li>A partir daí, passa a jogar como Vertical (1º Jogador)</li>
+                <li>O adversário passa a jogar como Horizontal (2º Jogador)</li>
+            </ul>
+            
+            <h3>Fim do Jogo</h3>
+            <p>O jogo termina quando um jogador não consegue realizar uma jogada válida. Nesse caso, <strong>o jogador anterior (que fez a última jogada) perde o jogo</strong>.</p>
+            
+            <div style="text-align: center; margin-top: 25px; display: flex; flex-direction: column; gap: 10px;">
+                <button class="reset-btn" onclick="closeRules()">Fechar</button>
+            </div>
+        </div>
+    </div>
 
-  <script>
-  if (typeof structuredClone !== 'function') {
-    window.structuredClone = (obj)=> JSON.parse(JSON.stringify(obj));
-  }
-
-  const N = 8; const EMPTY = 0, V=1, H=2;
-  const boardEl = document.getElementById('board');
-  const statusEl = document.getElementById('status');
-  const subEl = document.getElementById('substatus');
-  const sideSel = document.getElementById('side');
-  const depthSel = document.getElementById('depth');
-  const newBtn = document.getElementById('new');
-  const undoBtn = document.getElementById('undo');
-  const twoBtn = document.getElementById('twoBtn');
-
-  let cells, turn, humanSide, history, lastMove = null, running = true;
-  let twoPlayers = false;
-
-  function resetGame(){
-    cells = Array.from({length:N}, ()=>Array(N).fill(EMPTY));
-    history = []; lastMove = null; running = true;
-    humanSide = sideSel.value==='V'? V : H;
-    turn = V;
-    renderBoard();
-    info();
-    maybeComputer();
-  }
-  newBtn.onclick = resetGame;
-  undoBtn.onclick = ()=>{ if(history.length){ const s = history.pop(); ({cells,turn,lastMove,running}=structuredClone(s)); renderBoard(); info(); } };
-
-  // alternar 2 jogadores
-  twoBtn.onclick = ()=>{
-    twoPlayers = !twoPlayers;
-    twoBtn.textContent = twoPlayers ? "2 Jogadores: ON" : "2 Jogadores: OFF";
-    // desativar seletores quando ON
-    sideSel.disabled = twoPlayers;
-    depthSel.disabled = twoPlayers;
-    info();
-  };
-
-  function legalMoves(player, st=cells){
-    const moves = [];
-    if(player===V){ for(let r=0;r<N-1;r++) for(let c=0;c<N;c++) if(st[r][c]===EMPTY && st[r+1][c]===EMPTY) moves.push([r,c,r+1,c]); }
-    else { for(let r=0;r<N;r++) for(let c=0;c<N-1;c++) if(st[r][c]===EMPTY && st[r][c+1]===EMPTY) moves.push([r,c,r,c+1]); }
-    return moves;
-  }
-  function applyMove(mv, player, st){ const [r1,c1,r2,c2]=mv; const ns = structuredClone(st); ns[r1][c1]=player; ns[r2][c2]=player; return ns; }
-
-  function evaluate(st){
-    const mV = legalMoves(V,st).length, mH = legalMoves(H,st).length;
-    let singles = 0;
-    for(let r=0;r<N;r++) for(let c=0;c<N;c++){ if(st[r][c]!==EMPTY) continue;
-      const vOk = (r>0 && st[r-1][c]===EMPTY) || (r<N-1 && st[r+1][c]===EMPTY);
-      const hOk = (c>0 && st[r][c-1]===EMPTY) || (c<N-1 && st[r][c+1]===EMPTY);
-      if(!(vOk||hOk)) singles++; }
-    return (mV - mH) * 10 - singles * 2;
-  }
-
-  function aiMove(maxDepth, timeLimitMs=1200){
-    const start = performance.now();
-    let best = null;
-    const moves = ordered(legalMoves(turn,cells));
-    if(!moves.length) return null;
-    const timeUp = ()=> performance.now()-start > timeLimitMs;
-
-    function search(st, depth, alpha, beta, player){
-      const myMoves = legalMoves(player, st);
-      if(!myMoves.length) return player===V? -99999 : 99999;
-      if(depth===0 || timeUp()) return evaluate(st);
-      if(player===V){
-        let val = -Infinity;
-        for(const mv of ordered(myMoves)){
-          const child = applyMove(mv, V, st);
-          val = Math.max(val, search(child, depth-1, alpha, beta, H));
-          alpha = Math.max(alpha, val);
-          if(beta<=alpha || timeUp()) break;
-        } return val;
-      } else {
-        let val = Infinity;
-        for(const mv of ordered(myMoves)){
-          const child = applyMove(mv, H, st);
-          val = Math.min(val, search(child, depth-1, alpha, beta, V));
-          beta = Math.min(beta, val);
-          if(beta<=alpha || timeUp()) break;
-        } return val;
-      }
-    }
-    const maxDepthClamped = Math.max(1, Math.min(6, maxDepth));
-    for(let d=1; d<=maxDepthClamped; d++){
-      if(timeUp()) break;
-      let localBest = moves[0], localScore = -Infinity;
-      for(const mv of moves){
-        if(timeUp()) break;
-        const child = applyMove(mv, turn, cells);
-        const score = (turn===V)? search(child, d-1, -Infinity, Infinity, H) : search(child, d-1, -Infinity, Infinity, V);
-        if(score>localScore){ localScore = score; localBest = mv; }
-      } best = localBest;
-    }
-    return best ?? moves[Math.floor(Math.random()*moves.length)];
-  }
-
-  function isBoardEmpty(){ for(let r=0;r<N;r++) for(let c=0;c<N;c++) if(cells[r][c]!==EMPTY) return false; return true; }
-  function diagMirrorMoveOf([r1,c1,r2,c2]){ return [c1,r1,c2,r2]; }
-  function perfectVMove(){ if(turn!==V) return null; if(isBoardEmpty()) return [3,3,4,3]; if(lastMove){ const mv = diagMirrorMoveOf(lastMove); if(isLegal(mv)) return mv; } return null; }
-
-  function ordered(mvs){ return mvs.sort((a,b)=> centerScore(b)-centerScore(a)); }
-  function centerScore(mv){ const [r1,c1,r2,c2]=mv; const r=(r1+r2)/2, c=(c1+c2)/2; const dr=Math.abs(r-(N-1)/2), dc=Math.abs(c-(N-1)/2); return -(dr+dc); }
-
-  function renderBoard(){
-    boardEl.innerHTML = '';
-    for(let r=0;r<N;r++) for(let c=0;c<N;c++){
-      const cell = document.createElement('div'); cell.className='cell'; cell.dataset.r=r; cell.dataset.c=c;
-      if(lastMove){ const [r1,c1,r2,c2]=lastMove; if((r===r1 && c===c1)||(r===r2 && c===c2)){ const m=document.createElement('div'); m.className='marker'; cell.appendChild(m);} }
-      if(cells[r][c]!==EMPTY){ const d=document.createElement('div'); d.className='domino '+(cells[r][c]===V?'V':'H'); d.textContent=(cells[r][c]===V?'V':'H'); cell.appendChild(d); }
-      cell.addEventListener('click', handleClick);
-      boardEl.appendChild(cell);
-    }
-  }
-
-  function isLegal([r1,c1,r2,c2]){
-    if(r1<0||r1>=N||c1<0||c1>=N||r2<0||r2>=N||c2<0||c2>=N) return false;
-    if(cells[r1][c1]!==EMPTY || cells[r2][c2]!==EMPTY) return false;
-    if(turn===V && c1===c2 && r2===r1+1) return true;
-    if(turn===H && r1===r2 && c2===c1+1) return true;
-    return false;
-  }
-
-  function handleClick(e){
-    if(!running) return;
-    const r = +e.currentTarget.dataset.r, c = +e.currentTarget.dataset.c;
-
-    // MODO 2 JOGADORES: jogada segue o jogador da vez
-    if(twoPlayers){
-      const mv = (turn===V)? [r,c,r+1,c] : [r,c,r,c+1];
-      if(!isLegal(mv)) return;
-      pushHistory(); placeMove(mv, turn); renderBoard(); info();
-      return;
-    }
-
-    // VS COMPUTADOR
-    if(turn!==humanSide) return;
-    const mv = humanSide===V? [r,c,r+1,c] : [r,c,r,c+1];
-    if(!isLegal(mv)) return;
-    pushHistory(); placeMove(mv, humanSide); renderBoard(); info(); maybeComputer();
-  }
-
-  function pushHistory(){ history.push(structuredClone({cells,turn,lastMove,running,twoPlayers})); if(history.length>30) history.shift(); }
-  function placeMove(mv, player){
-    const [r1,c1,r2,c2]=mv; cells[r1][c1]=player; cells[r2][c2]=player; lastMove=mv; turn=(player===V?H:V);
-    const nextMoves = legalMoves(turn,cells);
-    if(nextMoves.length===0){ running=false; const winner = player===V? 'Vertical (V)':'Horizontal (H)'; statusEl.innerHTML = `Fim de jogo: <span class="pill" style="background:rgba(124,242,156,.15);border:1px solid rgba(124,242,156,.6)">${winner} venceu</span>`; subEl.textContent=''; }
-  }
-  function info(){
-    if(!running) return;
-    const mvCount = legalMoves(turn,cells).length;
-    const who = turn===V? 'Vertical (V)':'Horizontal (H)';
-    statusEl.textContent = `Vez do ${who}` + (twoPlayers ? ' — modo 2 jogadores' : '');
-    subEl.textContent = `Jogadas disponíveis: ${mvCount}`;
-    undoBtn.disabled = history.length===0;
-  }
-
-  async function maybeComputer(){
-    if(!running || twoPlayers) return;           // sem computador no modo 2P
-    if(turn!==humanSide){
-      await new Promise(r=>setTimeout(r, 200));
-      const mode = depthSel.value;
-      if(mode==='perfectV' && humanSide===H && turn===V){
-        let mv = perfectVMove(); if(!mv){ mv = aiMove(4,1200); }
-        if(mv){ placeMove(mv,turn); renderBoard(); info(); if(running && turn!==humanSide) maybeComputer(); }
-        return;
-      }
-      const depth = parseInt(mode,10); subEl.textContent='A pensar…';
-      const mv = aiMove(depth, depth<=2? 500 : depth===3? 900 : depth===4? 1400 : 1800);
-      if(mv){ placeMove(mv,turn); renderBoard(); info(); if(running && turn!==humanSide) maybeComputer(); }
-    }
-  }
-
-  resetGame();
-  sideSel.addEventListener('change', ()=>{ if(!twoPlayers){ resetGame(); }});
-  </script>
+    <script>
+        const BOARD_SIZE = 10;
+        let board = Array(BOARD_SIZE).fill(null).map(() => Array(BOARD_SIZE).fill(null));
+        let currentPlayer = 'vertical';
+        let selectedCells = [];
+        let moveCount = 0;
+        let canSwap = false;
+        let gameMode = 'pvp'; // 'pvp', 'ai-easy', 'ai-medium'
+        let aiPlayer = 'horizontal'; // A IA joga como horizontal
+        let isAiThinking = false;
+        let orientationSwapped = false; // Rastreia se houve troca de orientações
+        
+        function startGame(mode) {
+            gameMode = mode;
+            document.getElementById('menuScreen').style.display = 'none';
+            document.getElementById('gameScreen').classList.add('active');
+            resetGame();
+        }
+        
+        function backToMenu() {
+            document.getElementById('menuScreen').style.display = 'block';
+            document.getElementById('gameScreen').classList.remove('active');
+            document.getElementById('gameOver').classList.remove('show');
+            resetGame();
+        }
+        
+        function showRules() {
+            document.getElementById('rulesModal').classList.add('show');
+        }
+        
+        function closeRules() {
+            document.getElementById('rulesModal').classList.remove('show');
+        }
+        
+        function initBoard() {
+            const boardElement = document.getElementById('board');
+            boardElement.innerHTML = '';
+            
+            for (let row = 0; row < BOARD_SIZE; row++) {
+                for (let col = 0; col < BOARD_SIZE; col++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    cell.dataset.row = row;
+                    cell.dataset.col = col;
+                    cell.addEventListener('click', () => handleCellClick(row, col));
+                    boardElement.appendChild(cell);
+                }
+            }
+            
+            updateDisplay();
+        }
+        
+        function handleCellClick(row, col) {
+            if (isAiThinking) return;
+            if (gameMode !== 'pvp' && currentPlayer === aiPlayer) return;
+            if (board[row][col] !== null) return;
+            
+            const index = selectedCells.findIndex(c => c.row === row && c.col === col);
+            
+            if (index !== -1) {
+                selectedCells.splice(index, 1);
+            } else {
+                selectedCells.push({ row, col });
+            }
+            
+            updatePreview();
+            validateSelection();
+        }
+        
+        function updatePreview() {
+            document.querySelectorAll('.cell').forEach(cell => {
+                cell.classList.remove('preview');
+            });
+            
+            selectedCells.forEach(({ row, col }) => {
+                const cell = document.querySelector(`[data-row="${row}"][data-col="${col}"]`);
+                cell.classList.add('preview');
+            });
+        }
+        
+        function validateSelection() {
+            const confirmBtn = document.getElementById('confirmBtn');
+            const cancelBtn = document.getElementById('cancelBtn');
+            
+            if (selectedCells.length === 0) {
+                confirmBtn.disabled = true;
+                cancelBtn.style.display = 'none';
+                return;
+            }
+            
+            cancelBtn.style.display = 'inline-block';
+            
+            if (selectedCells.length < 2) {
+                confirmBtn.disabled = true;
+                return;
+            }
+            
+            const sorted = [...selectedCells].sort((a, b) => {
+                if (currentPlayer === 'vertical') {
+                    return a.row - b.row || a.col - b.col;
+                } else {
+                    return a.col - b.col || a.row - b.row;
+                }
+            });
+            
+            let isValid = true;
+            
+            if (currentPlayer === 'vertical') {
+                const col = sorted[0].col;
+                if (!sorted.every(c => c.col === col)) {
+                    isValid = false;
+                }
+                
+                for (let i = 1; i < sorted.length; i++) {
+                    if (sorted[i].row - sorted[i-1].row !== 1) {
+                        isValid = false;
+                        break;
+                    }
+                }
+            } else {
+                const row = sorted[0].row;
+                if (!sorted.every(c => c.row === row)) {
+                    isValid = false;
+                }
+                
+                for (let i = 1; i < sorted.length; i++) {
+                    if (sorted[i].col - sorted[i-1].col !== 1) {
+                        isValid = false;
+                        break;
+                    }
+                }
+            }
+            
+            confirmBtn.disabled = !isValid;
+        }
+        
+        function confirmMove() {
+            selectedCells.forEach(({ row, col }) => {
+                board[row][col] = currentPlayer;
+                const cell = document.querySelector(`[data-row="${row}"][data-col="${col}"]`);
+                cell.classList.remove('preview');
+                cell.classList.add('occupied', currentPlayer);
+            });
+            
+            const playerWhoJustMoved = currentPlayer;
+            moveCount++;
+            selectedCells = [];
+            
+            // Trocar para o próximo jogador para verificar se ele tem jogadas
+            const nextPlayer = currentPlayer === 'vertical' ? 'horizontal' : 'vertical';
+            
+            // Verificar se o próximo jogador tem jogadas disponíveis
+            if (!hasMovesAvailable(nextPlayer)) {
+                // O próximo jogador não tem jogadas, então o jogador atual (que acabou de jogar) PERDE
+                endGame(playerWhoJustMoved);
+                return;
+            }
+            
+            if (moveCount === 1) {
+                canSwap = true;
+                switchPlayer();
+                if (gameMode === 'pvp') {
+                    document.getElementById('swapBtn').style.display = 'inline-block';
+                }
+                updateDisplay();
+                
+                if (gameMode !== 'pvp' && currentPlayer === aiPlayer) {
+                    setTimeout(() => aiMove(), 500);
+                }
+            } else {
+                switchPlayer();
+                updateDisplay();
+                
+                if (gameMode !== 'pvp' && currentPlayer === aiPlayer) {
+                    setTimeout(() => aiMove(), 500);
+                }
+            }
+        }
+        
+        function swapPlayers() {
+            // Quando troca, o 2º jogador aproveita a jogada anterior como sendo dele
+            // Marca que houve troca de orientações
+            orientationSwapped = true;
+            canSwap = false;
+            moveCount++; // A primeira jogada do 2º jogador já está efectuada
+            document.getElementById('swapBtn').style.display = 'none';
+            
+            // Após a troca:
+            // - O 2º jogador fica com Vertical (aproveitou a jogada)
+            // - O 1º jogador passa a jogar com Horizontal
+            // - É a vez do 1º jogador
+            // - currentPlayer deve ser 'horizontal' (orientação do 1º jogador agora)
+            
+            // Como currentPlayer já é 'horizontal' (estava na vez do 2º jogador), 
+            // não precisamos de mudar, mas agora representa o 1º jogador
+            
+            if (gameMode !== 'pvp') {
+                aiPlayer = aiPlayer === 'vertical' ? 'horizontal' : 'vertical';
+            }
+            
+            updateDisplay();
+            
+            if (gameMode !== 'pvp' && currentPlayer === aiPlayer) {
+                setTimeout(() => aiMove(), 500);
+            }
+        }
+        
+        function switchPlayer() {
+            currentPlayer = currentPlayer === 'vertical' ? 'horizontal' : 'vertical';
+            canSwap = false;
+            document.getElementById('swapBtn').style.display = 'none';
+            updateDisplay();
+        }
+        
+        // ============ ALGORITMO MINIMAX COM ALPHA-BETA TT E MCTS ============
+        
+        let transpositionTable = new Map();
+        let searchStartTime = 0;
+        let timeLimit = 5000; // 5 segundos
+        
+        // ===== MCTS Classes e Funções =====
+        class MCTSNode {
+            constructor(board, player, move = null, parent = null) {
+                this.board = board.map(row => [...row]);
+                this.player = player;
+                this.move = move;
+                this.parent = parent;
+                this.children = [];
+                this.wins = 0;
+                this.visits = 0;
+                this.untriedMoves = null;
+            }
+            
+            getUntriedMoves() {
+                if (this.untriedMoves === null) {
+                    this.untriedMoves = this.getAllMovesForBoard(this.player);
+                }
+                return this.untriedMoves;
+            }
+            
+            getAllMovesForBoard(player) {
+                const moves = [];
+                const b = this.board;
+                
+                if (player === 'vertical') {
+                    for (let col = 0; col < BOARD_SIZE; col++) {
+                        for (let row = 0; row < BOARD_SIZE - 1; row++) {
+                            if (b[row][col] === null && b[row + 1][col] === null) {
+                                const move = [{ row, col }];
+                                let r = row + 1;
+                                while (r < BOARD_SIZE && b[r][col] === null) {
+                                    move.push({ row: r, col });
+                                    moves.push([...move]);
+                                    r++;
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    for (let row = 0; row < BOARD_SIZE; row++) {
+                        for (let col = 0; col < BOARD_SIZE - 1; col++) {
+                            if (b[row][col] === null && b[row][col + 1] === null) {
+                                const move = [{ row, col }];
+                                let c = col + 1;
+                                while (c < BOARD_SIZE && b[row][c] === null) {
+                                    move.push({ row, col: c });
+                                    moves.push([...move]);
+                                    c++;
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                return moves;
+            }
+            
+            UCB1(explorationParam = 1.41) {
+                if (this.visits === 0) return Infinity;
+                // wins/visits representa taxa de vitória (quanto maior, melhor)
+                return (this.wins / this.visits) + explorationParam * Math.sqrt(Math.log(this.parent.visits) / this.visits);
+            }
+            
+            selectChild() {
+                return this.children.reduce((best, child) => 
+                    child.UCB1() > best.UCB1() ? child : best
+                );
+            }
+            
+            addChild(move, player) {
+                const newBoard = this.board.map(row => [...row]);
+                move.forEach(({ row, col }) => {
+                    newBoard[row][col] = player;
+                });
+                
+                const child = new MCTSNode(newBoard, player === 'vertical' ? 'horizontal' : 'vertical', move, this);
+                this.children.push(child);
+                
+                const index = this.untriedMoves.findIndex(m => 
+                    m.length === move.length && m.every((cell, i) => 
+                        cell.row === move[i].row && cell.col === move[i].col
+                    )
+                );
+                if (index !== -1) {
+                    this.untriedMoves.splice(index, 1);
+                }
+                
+                return child;
+            }
+            
+            update(result) {
+                this.visits++;
+                this.wins += result;
+            }
+        }
+        
+        function runMCTS(rootBoard, rootPlayer, timeLimit) {
+            const root = new MCTSNode(rootBoard, rootPlayer);
+            const startTime = Date.now();
+            let iterations = 0;
+            
+            while (Date.now() - startTime < timeLimit) {
+                let node = root;
+                const simBoard = rootBoard.map(row => [...row]);
+                let simPlayer = rootPlayer;
+                
+                // Selection
+                while (node.getUntriedMoves().length === 0 && node.children.length > 0) {
+                    node = node.selectChild();
+                    if (node.move) {
+                        node.move.forEach(({ row, col }) => {
+                            simBoard[row][col] = simPlayer;
+                        });
+                        simPlayer = simPlayer === 'vertical' ? 'horizontal' : 'vertical';
+                    }
+                }
+                
+                // Expansion
+                const untriedMoves = node.getUntriedMoves();
+                if (untriedMoves.length > 0) {
+                    const move = untriedMoves[Math.floor(Math.random() * untriedMoves.length)];
+                    move.forEach(({ row, col }) => {
+                        simBoard[row][col] = simPlayer;
+                    });
+                    node = node.addChild(move, simPlayer);
+                    simPlayer = simPlayer === 'vertical' ? 'horizontal' : 'vertical';
+                }
+                
+                // Simulation
+                const result = simulateGame(simBoard, simPlayer, rootPlayer);
+                
+                // Backpropagation
+                while (node !== null) {
+                    node.update(result);
+                    node = node.parent;
+                }
+                
+                iterations++;
+            }
+            
+            // Retornar melhor jogada
+            let bestChild = null;
+            let bestVisits = -1;
+            
+            for (const child of root.children) {
+                if (child.visits > bestVisits) {
+                    bestVisits = child.visits;
+                    bestChild = child;
+                }
+            }
+            
+            return bestChild ? bestChild.move : null;
+        }
+        
+        function simulateGame(boardState, startPlayer, aiPlayer) {
+            const simBoard = boardState.map(row => [...row]);
+            let currentPlayer = startPlayer;
+            let lastPlayerToMove = null;
+            let movesCount = 0;
+            const maxMoves = 100;
+            
+            while (movesCount < maxMoves) {
+                const moves = getAllMovesForSimBoard(simBoard, currentPlayer);
+                
+                if (moves.length === 0) {
+                    // Jogador atual não tem jogadas disponíveis
+                    // O ÚLTIMO a jogar (lastPlayerToMove) PERDE
+                    // Se lastPlayerToMove é a IA, ela perdeu (retorna 0)
+                    // Se lastPlayerToMove é o oponente, a IA ganhou (retorna 1)
+                    if (lastPlayerToMove === null) {
+                        return 0.5; // Nenhum movimento foi feito ainda
+                    }
+                    return lastPlayerToMove === aiPlayer ? 0 : 1;
+                }
+                
+                // Escolher jogada aleatória
+                const move = moves[Math.floor(Math.random() * moves.length)];
+                move.forEach(({ row, col }) => {
+                    simBoard[row][col] = currentPlayer;
+                });
+                
+                lastPlayerToMove = currentPlayer;
+                currentPlayer = currentPlayer === 'vertical' ? 'horizontal' : 'vertical';
+                movesCount++;
+            }
+            
+            return 0.5; // Empate por timeout
+        }
+        
+        function getAllMovesForSimBoard(simBoard, player) {
+            const moves = [];
+            
+            if (player === 'vertical') {
+                for (let col = 0; col < BOARD_SIZE; col++) {
+                    for (let row = 0; row < BOARD_SIZE - 1; row++) {
+                        if (simBoard[row][col] === null && simBoard[row + 1][col] === null) {
+                            const move = [{ row, col }];
+                            let r = row + 1;
+                            while (r < BOARD_SIZE && simBoard[r][col] === null) {
+                                move.push({ row: r, col });
+                                moves.push([...move]);
+                                r++;
+                            }
+                        }
+                    }
+                }
+            } else {
+                for (let row = 0; row < BOARD_SIZE; row++) {
+                    for (let col = 0; col < BOARD_SIZE - 1; col++) {
+                        if (simBoard[row][col] === null && simBoard[row][col + 1] === null) {
+                            const move = [{ row, col }];
+                            let c = col + 1;
+                            while (c < BOARD_SIZE && simBoard[row][c] === null) {
+                                move.push({ row, col: c });
+                                moves.push([...move]);
+                                c++;
+                            }
+                        }
+                    }
+                }
+            }
+            
+            return moves;
+        }
+        
+        // ===== Minimax Original =====
+        
+        function getBoardHash() {
+            let hash = '';
+            for (let row = 0; row < BOARD_SIZE; row++) {
+                for (let col = 0; col < BOARD_SIZE; col++) {
+                    if (board[row][col] === null) hash += '0';
+                    else if (board[row][col] === 'vertical') hash += '1';
+                    else hash += '2';
+                }
+            }
+            return hash;
+        }
+        
+        function getAllPossibleMoves(player) {
+            const moves = [];
+            
+            if (player === 'vertical') {
+                for (let col = 0; col < BOARD_SIZE; col++) {
+                    for (let row = 0; row < BOARD_SIZE - 1; row++) {
+                        if (board[row][col] === null && board[row + 1][col] === null) {
+                            const move = [{ row, col }];
+                            let r = row + 1;
+                            while (r < BOARD_SIZE && board[r][col] === null) {
+                                move.push({ row: r, col });
+                                moves.push([...move]);
+                                r++;
+                            }
+                        }
+                    }
+                }
+            } else {
+                for (let row = 0; row < BOARD_SIZE; row++) {
+                    for (let col = 0; col < BOARD_SIZE - 1; col++) {
+                        if (board[row][col] === null && board[row][col + 1] === null) {
+                            const move = [{ row, col }];
+                            let c = col + 1;
+                            while (c < BOARD_SIZE && board[row][c] === null) {
+                                move.push({ row, col: c });
+                                moves.push([...move]);
+                                c++;
+                            }
+                        }
+                    }
+                }
+            }
+            
+            return moves;
+        }
+        
+        function makeMove(move, player) {
+            move.forEach(({ row, col }) => {
+                board[row][col] = player;
+            });
+        }
+        
+        function undoMove(move) {
+            move.forEach(({ row, col }) => {
+                board[row][col] = null;
+            });
+        }
+        
+        function hasMovesAvailable(player) {
+            return getAllPossibleMoves(player).length > 0;
+        }
+        
+        function evaluatePosition() {
+            const aiMoves = getAllPossibleMoves(aiPlayer).length;
+            const opponentPlayer = aiPlayer === 'vertical' ? 'horizontal' : 'vertical';
+            const opponentMoves = getAllPossibleMoves(opponentPlayer).length;
+            
+            // Se o oponente não tem jogadas, NÓS ganhamos! (porque ele não consegue jogar)
+            if (opponentMoves === 0) return 1000;
+            // Se NÓS não temos jogadas, perdemos
+            if (aiMoves === 0) return -1000;
+            
+            // Estratégia: Queremos MAXIMIZAR as jogadas do oponente e MINIMIZAR as nossas
+            // Porque queremos que ele seja FORÇADO a fazer a última jogada
+            // Quanto mais jogadas ele tiver, mais provável é que ele fique preso
+            return (opponentMoves * 2) - aiMoves;
+        }
+        
+        function minimax(depth, isMaximizing, alpha, beta, maxDepth) {
+            if (Date.now() - searchStartTime > timeLimit) {
+                return 0;
+            }
+            
+            const boardHash = getBoardHash();
+            const ttKey = `${boardHash}_${depth}_${isMaximizing}`;
+            
+            if (gameMode === 'ai-medium') {
+                const cached = transpositionTable.get(ttKey);
+                if (cached !== undefined && cached.depth >= depth) {
+                    return cached.value;
+                }
+            }
+            
+            const currentPlayerInSim = isMaximizing ? aiPlayer : (aiPlayer === 'vertical' ? 'horizontal' : 'vertical');
+            
+            // Terminal: se o jogador atual não tem jogadas disponíveis
+            if (!hasMovesAvailable(currentPlayerInSim)) {
+                // O jogador atual não consegue jogar, então o ANTERIOR fez a última jogada e PERDE
+                // Se estamos a maximizar (turno da IA) e a IA não consegue jogar,
+                // significa que o oponente fez a última jogada e PERDEU, então IA GANHOU
+                // Se estamos a minimizar (turno do oponente) e ele não consegue jogar,
+                // significa que a IA fez a última jogada e PERDEU, então oponente GANHOU
+                const value = isMaximizing ? 1000 : -1000;
+                if (gameMode === 'ai-medium') {
+                    transpositionTable.set(ttKey, { value, depth });
+                }
+                return value;
+            }
+            
+            if (depth >= maxDepth) {
+                const value = evaluatePosition();
+                if (gameMode === 'ai-medium') {
+                    transpositionTable.set(ttKey, { value, depth });
+                }
+                return value;
+            }
+            
+            const moves = getAllPossibleMoves(currentPlayerInSim);
+            
+            if (isMaximizing) {
+                let maxEval = -Infinity;
+                for (const move of moves) {
+                    makeMove(move, currentPlayerInSim);
+                    const evaluation = minimax(depth + 1, false, alpha, beta, maxDepth);
+                    undoMove(move);
+                    maxEval = Math.max(maxEval, evaluation);
+                    alpha = Math.max(alpha, evaluation);
+                    if (beta <= alpha) break;
+                }
+                
+                if (gameMode === 'ai-medium') {
+                    transpositionTable.set(ttKey, { value: maxEval, depth });
+                }
+                return maxEval;
+            } else {
+                let minEval = Infinity;
+                for (const move of moves) {
+                    makeMove(move, currentPlayerInSim);
+                    const evaluation = minimax(depth + 1, true, alpha, beta, maxDepth);
+                    undoMove(move);
+                    minEval = Math.min(minEval, evaluation);
+                    beta = Math.min(beta, evaluation);
+                    if (beta <= alpha) break;
+                }
+                
+                if (gameMode === 'ai-medium') {
+                    transpositionTable.set(ttKey, { value: minEval, depth });
+                }
+                return minEval;
+            }
+        }
+        
+        function getBestMove() {
+            searchStartTime = Date.now();
+            
+            // Minimax com TT para os níveis de IA
+            if (gameMode === 'ai-medium') {
+                transpositionTable.clear();
+            }
+            
+            let maxDepth = 3;
+            if (gameMode === 'ai-easy') {
+                maxDepth = 2;
+            } else if (gameMode === 'ai-medium') {
+                maxDepth = 6;
+            }
+            
+            const moves = getAllPossibleMoves(aiPlayer);
+            if (moves.length === 0) return null;
+            
+            let bestMove = moves[0];
+            let bestValue = -Infinity;
+            
+            for (let depth = 1; depth <= maxDepth; depth++) {
+                if (Date.now() - searchStartTime > timeLimit) {
+                    break;
+                }
+                
+                let currentBestMove = null;
+                let currentBestValue = -Infinity;
+                
+                for (const move of moves) {
+                    if (Date.now() - searchStartTime > timeLimit) {
+                        break;
+                    }
+                    
+                    makeMove(move, aiPlayer);
+                    const value = minimax(0, false, -Infinity, Infinity, depth);
+                    undoMove(move);
+                    
+                    if (value > currentBestValue) {
+                        currentBestValue = value;
+                        currentBestMove = move;
+                    }
+                }
+                
+                if (currentBestMove && currentBestValue > bestValue) {
+                    bestValue = currentBestValue;
+                    bestMove = currentBestMove;
+                }
+            }
+            
+            return bestMove;
+        }
+        
+        // ============ FIM ALGORITMOS ============
+        
+        function aiMove() {
+            if (canSwap && Math.random() < 0.3) {
+                swapPlayers();
+                return;
+            }
+            
+            isAiThinking = true;
+            document.getElementById('aiThinking').style.display = 'block';
+            
+            setTimeout(() => {
+                const bestMove = getBestMove();
+                
+                if (bestMove) {
+                    selectedCells = bestMove;
+                    confirmMove();
+                } else {
+                    // IA não tem jogadas, ela perde
+                    endGame(aiPlayer);
+                }
+                
+                isAiThinking = false;
+                document.getElementById('aiThinking').style.display = 'none';
+            }, 300);
+        }
+        
+        // ============ FIM ALGORITMOS ============
+        
+        function isGameOver() {
+            const nextPlayer = currentPlayer === 'vertical' ? 'horizontal' : 'vertical';
+            return !hasMovesAvailable(nextPlayer);
+        }
+        
+        function endGame(loser = null) {
+            // Se não foi especificado quem perdeu, determinar baseado no currentPlayer
+            if (loser === null) {
+                loser = currentPlayer;
+            }
+            
+            // Determinar qual jogador perdeu baseado na orientação e se houve troca
+            let loserText, winnerText;
+            if (orientationSwapped) {
+                // Após troca: vertical = 2º jogador, horizontal = 1º jogador
+                loserText = loser === 'vertical' ? '2º Jogador' : '1º Jogador';
+                winnerText = loser === 'vertical' ? '1º Jogador' : '2º Jogador';
+            } else {
+                // Antes da troca: vertical = 1º jogador, horizontal = 2º jogador
+                loserText = loser === 'vertical' ? '1º Jogador' : '2º Jogador';
+                winnerText = loser === 'vertical' ? '2º Jogador' : '1º Jogador';
+            }
+            
+            let message = `O ${winnerText} venceu!\n\nO ${loserText} fez a última jogada e perdeu.`;
+            
+            if (gameMode !== 'pvp') {
+                if (loser.toLowerCase() === aiPlayer) {
+                    message = '🎉 Parabéns! Venceste a IA!\n\nA IA fez a última jogada e perdeu.';
+                } else {
+                    message = '😔 A IA venceu!\n\nFizeste a última jogada e perdeste. Tenta novamente!';
+                }
+            }
+            
+            document.getElementById('winnerText').textContent = message;
+            document.getElementById('gameOver').classList.add('show');
+        }
+        
+        function cancelSelection() {
+            selectedCells = [];
+            updatePreview();
+            validateSelection();
+        }
+        
+        function updateDisplay() {
+            // Determinar qual jogador baseado na orientação e se houve troca
+            let playerText;
+            if (orientationSwapped) {
+                // Após troca: vertical = 2º jogador, horizontal = 1º jogador
+                playerText = currentPlayer === 'vertical' ? '2º Jogador' : '1º Jogador';
+            } else {
+                // Antes da troca: vertical = 1º jogador, horizontal = 2º jogador
+                playerText = currentPlayer === 'vertical' ? '1º Jogador' : '2º Jogador';
+            }
+            
+            let displayText = `Vez do ${playerText}`;
+            
+            if (gameMode !== 'pvp' && currentPlayer === aiPlayer) {
+                displayText = `Vez da IA (${playerText})`;
+            }
+            
+            document.getElementById('currentPlayer').textContent = displayText;
+            
+            const orientation = currentPlayer === 'vertical' ? 'verticalmente' : 'horizontalmente';
+            document.getElementById('instructions').textContent = 
+                `Clique nas células para selecionar onde colocar as peças ${orientation} (mínimo 2 adjacentes)`;
+            
+            document.getElementById('confirmBtn').disabled = true;
+            document.getElementById('cancelBtn').style.display = 'none';
+        }
+        
+        function resetGame() {
+            board = Array(BOARD_SIZE).fill(null).map(() => Array(BOARD_SIZE).fill(null));
+            currentPlayer = 'vertical';
+            aiPlayer = 'horizontal';
+            selectedCells = [];
+            moveCount = 0;
+            canSwap = false;
+            isAiThinking = false;
+            orientationSwapped = false; // Reset da flag
+            document.getElementById('gameOver').classList.remove('show');
+            document.getElementById('swapBtn').style.display = 'none';
+            document.getElementById('aiThinking').style.display = 'none';
+            initBoard();
+        }
+        
+        document.getElementById('confirmBtn').addEventListener('click', confirmMove);
+        document.getElementById('cancelBtn').addEventListener('click', cancelSelection);
+        document.getElementById('resetBtn').addEventListener('click', resetGame);
+        document.getElementById('swapBtn').addEventListener('click', swapPlayers);
+        
+        initBoard();
+    </script>
 </body>
 </html>
