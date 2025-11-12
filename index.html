@@ -1,42 +1,4 @@
-@media (max-width: 767px) and (orientation: landscape) {
-            .container {
-                padding: 10px;
-            }
-            
-            h1 {
-                font-size: 20px;
-                margin-bottom: 8px;
-            }
-            
-            .info-panel {
-                padding: 8px;
-                margin-bottom: 10px;
-            }
-            
-            .current-player {
-                font-size: 16px;
-                margin-bottom: 5px;
-            }
-            
-            .instructions {
-                font-size: 12px;
-            }
-            
-            .board {
-                width: min(300px, 50vh);
-            }
-            
-            .buttons {
-                margin-top: 10px;
-                gap: 5px;
-            }
-            
-            button {
-                padding: 8px 15px;
-                font-size: 13px;
-                min-height: 38px;
-            }
-        }<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt">
 <head>
     <meta charset="UTF-8">
@@ -76,18 +38,6 @@
             font-size: 28px;
         }
         
-        @media (min-width: 768px) {
-            .container {
-                padding: 30px;
-                width: auto;
-            }
-            
-            h1 {
-                font-size: 36px;
-                margin-bottom: 20px;
-            }
-        }
-        
         .menu-screen {
             text-align: center;
             padding: 10px;
@@ -121,26 +71,6 @@
             min-height: 50px;
         }
         
-        @media (min-width: 768px) {
-            .menu-screen {
-                padding: 20px;
-            }
-            
-            .menu-screen h2 {
-                margin-bottom: 30px;
-                font-size: 28px;
-            }
-            
-            .mode-buttons {
-                gap: 15px;
-            }
-            
-            .mode-btn, .rules-btn {
-                padding: 15px 30px;
-                font-size: 18px;
-            }
-        }
-        
         .mode-btn:hover, .rules-btn:hover {
             background: #5568d3;
             transform: translateY(-2px);
@@ -149,7 +79,6 @@
         
         .rules-btn {
             background: #9E9E9E;
-            margin-top: 10px;
         }
         
         .rules-btn:hover {
@@ -186,23 +115,6 @@
             line-height: 1.4;
         }
         
-        @media (min-width: 768px) {
-            .info-panel {
-                margin-bottom: 20px;
-                padding: 15px;
-            }
-            
-            .current-player {
-                font-size: 20px;
-                margin-bottom: 10px;
-            }
-            
-            .instructions {
-                font-size: 14px;
-                margin-top: 10px;
-            }
-        }
-        
         .ai-thinking {
             color: #FF9800;
             font-weight: bold;
@@ -231,36 +143,6 @@
             position: relative;
             transition: background 0.2s;
             touch-action: manipulation;
-        }
-        
-        @media (max-width: 767px) {
-            .board {
-                width: min(350px, calc(100vw - 40px));
-            }
-        }
-        
-        @media (max-width: 380px) {
-            .board {
-                width: calc(100vw - 30px);
-            }
-            
-            .container {
-                padding: 15px;
-            }
-            
-            h1 {
-                font-size: 24px;
-            }
-        }
-        
-        .cell:hover:not(.occupied) {
-            background: #e0e0ff;
-        }
-        
-        @media (hover: none) {
-            .cell:hover:not(.occupied) {
-                background: white;
-            }
         }
         
         .cell.preview {
@@ -312,19 +194,6 @@
             font-weight: bold;
             touch-action: manipulation;
             min-height: 44px;
-        }
-        
-        @media (min-width: 768px) {
-            .buttons {
-                gap: 10px;
-                margin-top: 20px;
-                flex-wrap: nowrap;
-            }
-            
-            button {
-                padding: 12px 24px;
-                font-size: 16px;
-            }
         }
         
         .confirm-btn {
@@ -408,6 +277,18 @@
             text-align: left;
         }
         
+        .game-over-content h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+        
+        .game-over-content p {
+            margin-bottom: 15px;
+            font-size: 16px;
+            line-height: 1.4;
+        }
+        
         .rules-content h2 {
             color: #667eea;
             margin-bottom: 15px;
@@ -429,10 +310,103 @@
             font-size: 14px;
         }
         
+        .rules-content ul {
+            padding-left: 20px;
+        }
+        
+        .rules-content li {
+            margin-bottom: 6px;
+        }
+        
+        .rules-content strong {
+            color: #667eea;
+        }
+        
+        .rules-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .rules-modal.show {
+            display: flex;
+        }
+        
         @media (min-width: 768px) {
+            .container {
+                padding: 30px;
+                width: auto;
+            }
+            
+            h1 {
+                font-size: 36px;
+                margin-bottom: 20px;
+            }
+            
+            .menu-screen {
+                padding: 20px;
+            }
+            
+            .menu-screen h2 {
+                margin-bottom: 30px;
+                font-size: 28px;
+            }
+            
+            .mode-buttons {
+                gap: 15px;
+            }
+            
+            .mode-btn, .rules-btn {
+                padding: 15px 30px;
+                font-size: 18px;
+            }
+            
+            .info-panel {
+                margin-bottom: 20px;
+                padding: 15px;
+            }
+            
+            .current-player {
+                font-size: 20px;
+                margin-bottom: 10px;
+            }
+            
+            .instructions {
+                font-size: 14px;
+                margin-top: 10px;
+            }
+            
+            .buttons {
+                gap: 10px;
+                margin-top: 20px;
+                flex-wrap: nowrap;
+            }
+            
+            button {
+                padding: 12px 24px;
+                font-size: 16px;
+            }
+            
             .game-over-content {
                 max-width: 400px;
                 padding: 40px;
+            }
+            
+            .game-over-content h2 {
+                margin-bottom: 20px;
+                font-size: 28px;
+            }
+            
+            .game-over-content p {
+                margin-bottom: 20px;
+                font-size: 18px;
             }
             
             .rules-content {
@@ -457,65 +431,42 @@
                 line-height: 1.6;
                 font-size: 16px;
             }
-        }
-        
-        .rules-content ul {
-            padding-left: 20px;
-        }
-        
-        .rules-content li {
-            margin-bottom: 6px;
-        }
-        
-        @media (min-width: 768px) {
+            
             .rules-content li {
                 margin-bottom: 8px;
             }
         }
         
-        .rules-content strong {
-            color: #667eea;
+        @media (max-width: 767px) {
+            .board {
+                width: min(350px, calc(100vw - 40px));
+            }
         }
         
-        .game-over-content h2 {
-            color: #667eea;
-            margin-bottom: 15px;
-            font-size: 24px;
-        }
-        
-        .game-over-content p {
-            margin-bottom: 15px;
-            font-size: 16px;
-            line-height: 1.4;
-        }
-        
-        @media (min-width: 768px) {
-            .game-over-content h2 {
-                margin-bottom: 20px;
-                font-size: 28px;
+        @media (max-width: 380px) {
+            .board {
+                width: calc(100vw - 30px);
             }
             
-            .game-over-content p {
-                margin-bottom: 20px;
-                font-size: 18px;
+            .container {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 24px;
             }
         }
         
-        .rules-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.8);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
+        @media (hover: none) {
+            .cell:hover:not(.occupied) {
+                background: white;
+            }
         }
         
-        .rules-modal.show {
-            display: flex;
+        @media (hover: hover) {
+            .cell:hover:not(.occupied) {
+                background: #e0e0ff;
+            }
         }
     </style>
 </head>
@@ -605,7 +556,7 @@
             <h3>Fim do Jogo</h3>
             <p>O jogo termina quando um jogador não consegue realizar uma jogada válida. Nesse caso, <strong>o jogador anterior (que fez a última jogada) perde o jogo</strong>.</p>
             
-            <div style="text-align: center; margin-top: 25px; display: flex; flex-direction: column; gap: 10px;">
+            <div style="text-align: center; margin-top: 25px;">
                 <button class="reset-btn" onclick="closeRules()">Fechar</button>
             </div>
         </div>
@@ -618,10 +569,14 @@
         let selectedCells = [];
         let moveCount = 0;
         let canSwap = false;
-        let gameMode = 'pvp'; // 'pvp', 'ai-easy', 'ai-medium'
-        let aiPlayer = 'horizontal'; // A IA joga como horizontal
+        let gameMode = 'pvp';
+        let aiPlayer = 'horizontal';
         let isAiThinking = false;
-        let orientationSwapped = false; // Rastreia se houve troca de orientações
+        let orientationSwapped = false;
+        
+        let transpositionTable = new Map();
+        let searchStartTime = 0;
+        let timeLimit = 5000;
         
         function startGame(mode) {
             gameMode = mode;
@@ -759,12 +714,9 @@
             moveCount++;
             selectedCells = [];
             
-            // Trocar para o próximo jogador para verificar se ele tem jogadas
             const nextPlayer = currentPlayer === 'vertical' ? 'horizontal' : 'vertical';
             
-            // Verificar se o próximo jogador tem jogadas disponíveis
             if (!hasMovesAvailable(nextPlayer)) {
-                // O próximo jogador não tem jogadas, então o jogador atual (que acabou de jogar) PERDE
                 endGame(playerWhoJustMoved);
                 return;
             }
@@ -791,21 +743,10 @@
         }
         
         function swapPlayers() {
-            // Quando troca, o 2º jogador aproveita a jogada anterior como sendo dele
-            // Marca que houve troca de orientações
             orientationSwapped = true;
             canSwap = false;
-            moveCount++; // A primeira jogada do 2º jogador já está efectuada
+            moveCount++;
             document.getElementById('swapBtn').style.display = 'none';
-            
-            // Após a troca:
-            // - O 2º jogador fica com Vertical (aproveitou a jogada)
-            // - O 1º jogador passa a jogar com Horizontal
-            // - É a vez do 1º jogador
-            // - currentPlayer deve ser 'horizontal' (orientação do 1º jogador agora)
-            
-            // Como currentPlayer já é 'horizontal' (estava na vez do 2º jogador), 
-            // não precisamos de mudar, mas agora representa o 1º jogador
             
             if (gameMode !== 'pvp') {
                 aiPlayer = aiPlayer === 'vertical' ? 'horizontal' : 'vertical';
@@ -824,239 +765,6 @@
             document.getElementById('swapBtn').style.display = 'none';
             updateDisplay();
         }
-        
-        // ============ ALGORITMO MINIMAX COM ALPHA-BETA TT E MCTS ============
-        
-        let transpositionTable = new Map();
-        let searchStartTime = 0;
-        let timeLimit = 5000; // 5 segundos
-        
-        // ===== MCTS Classes e Funções =====
-        class MCTSNode {
-            constructor(board, player, move = null, parent = null) {
-                this.board = board.map(row => [...row]);
-                this.player = player;
-                this.move = move;
-                this.parent = parent;
-                this.children = [];
-                this.wins = 0;
-                this.visits = 0;
-                this.untriedMoves = null;
-            }
-            
-            getUntriedMoves() {
-                if (this.untriedMoves === null) {
-                    this.untriedMoves = this.getAllMovesForBoard(this.player);
-                }
-                return this.untriedMoves;
-            }
-            
-            getAllMovesForBoard(player) {
-                const moves = [];
-                const b = this.board;
-                
-                if (player === 'vertical') {
-                    for (let col = 0; col < BOARD_SIZE; col++) {
-                        for (let row = 0; row < BOARD_SIZE - 1; row++) {
-                            if (b[row][col] === null && b[row + 1][col] === null) {
-                                const move = [{ row, col }];
-                                let r = row + 1;
-                                while (r < BOARD_SIZE && b[r][col] === null) {
-                                    move.push({ row: r, col });
-                                    moves.push([...move]);
-                                    r++;
-                                }
-                            }
-                        }
-                    }
-                } else {
-                    for (let row = 0; row < BOARD_SIZE; row++) {
-                        for (let col = 0; col < BOARD_SIZE - 1; col++) {
-                            if (b[row][col] === null && b[row][col + 1] === null) {
-                                const move = [{ row, col }];
-                                let c = col + 1;
-                                while (c < BOARD_SIZE && b[row][c] === null) {
-                                    move.push({ row, col: c });
-                                    moves.push([...move]);
-                                    c++;
-                                }
-                            }
-                        }
-                    }
-                }
-                
-                return moves;
-            }
-            
-            UCB1(explorationParam = 1.41) {
-                if (this.visits === 0) return Infinity;
-                // wins/visits representa taxa de vitória (quanto maior, melhor)
-                return (this.wins / this.visits) + explorationParam * Math.sqrt(Math.log(this.parent.visits) / this.visits);
-            }
-            
-            selectChild() {
-                return this.children.reduce((best, child) => 
-                    child.UCB1() > best.UCB1() ? child : best
-                );
-            }
-            
-            addChild(move, player) {
-                const newBoard = this.board.map(row => [...row]);
-                move.forEach(({ row, col }) => {
-                    newBoard[row][col] = player;
-                });
-                
-                const child = new MCTSNode(newBoard, player === 'vertical' ? 'horizontal' : 'vertical', move, this);
-                this.children.push(child);
-                
-                const index = this.untriedMoves.findIndex(m => 
-                    m.length === move.length && m.every((cell, i) => 
-                        cell.row === move[i].row && cell.col === move[i].col
-                    )
-                );
-                if (index !== -1) {
-                    this.untriedMoves.splice(index, 1);
-                }
-                
-                return child;
-            }
-            
-            update(result) {
-                this.visits++;
-                this.wins += result;
-            }
-        }
-        
-        function runMCTS(rootBoard, rootPlayer, timeLimit) {
-            const root = new MCTSNode(rootBoard, rootPlayer);
-            const startTime = Date.now();
-            let iterations = 0;
-            
-            while (Date.now() - startTime < timeLimit) {
-                let node = root;
-                const simBoard = rootBoard.map(row => [...row]);
-                let simPlayer = rootPlayer;
-                
-                // Selection
-                while (node.getUntriedMoves().length === 0 && node.children.length > 0) {
-                    node = node.selectChild();
-                    if (node.move) {
-                        node.move.forEach(({ row, col }) => {
-                            simBoard[row][col] = simPlayer;
-                        });
-                        simPlayer = simPlayer === 'vertical' ? 'horizontal' : 'vertical';
-                    }
-                }
-                
-                // Expansion
-                const untriedMoves = node.getUntriedMoves();
-                if (untriedMoves.length > 0) {
-                    const move = untriedMoves[Math.floor(Math.random() * untriedMoves.length)];
-                    move.forEach(({ row, col }) => {
-                        simBoard[row][col] = simPlayer;
-                    });
-                    node = node.addChild(move, simPlayer);
-                    simPlayer = simPlayer === 'vertical' ? 'horizontal' : 'vertical';
-                }
-                
-                // Simulation
-                const result = simulateGame(simBoard, simPlayer, rootPlayer);
-                
-                // Backpropagation
-                while (node !== null) {
-                    node.update(result);
-                    node = node.parent;
-                }
-                
-                iterations++;
-            }
-            
-            // Retornar melhor jogada
-            let bestChild = null;
-            let bestVisits = -1;
-            
-            for (const child of root.children) {
-                if (child.visits > bestVisits) {
-                    bestVisits = child.visits;
-                    bestChild = child;
-                }
-            }
-            
-            return bestChild ? bestChild.move : null;
-        }
-        
-        function simulateGame(boardState, startPlayer, aiPlayer) {
-            const simBoard = boardState.map(row => [...row]);
-            let currentPlayer = startPlayer;
-            let lastPlayerToMove = null;
-            let movesCount = 0;
-            const maxMoves = 100;
-            
-            while (movesCount < maxMoves) {
-                const moves = getAllMovesForSimBoard(simBoard, currentPlayer);
-                
-                if (moves.length === 0) {
-                    // Jogador atual não tem jogadas disponíveis
-                    // O ÚLTIMO a jogar (lastPlayerToMove) PERDE
-                    // Se lastPlayerToMove é a IA, ela perdeu (retorna 0)
-                    // Se lastPlayerToMove é o oponente, a IA ganhou (retorna 1)
-                    if (lastPlayerToMove === null) {
-                        return 0.5; // Nenhum movimento foi feito ainda
-                    }
-                    return lastPlayerToMove === aiPlayer ? 0 : 1;
-                }
-                
-                // Escolher jogada aleatória
-                const move = moves[Math.floor(Math.random() * moves.length)];
-                move.forEach(({ row, col }) => {
-                    simBoard[row][col] = currentPlayer;
-                });
-                
-                lastPlayerToMove = currentPlayer;
-                currentPlayer = currentPlayer === 'vertical' ? 'horizontal' : 'vertical';
-                movesCount++;
-            }
-            
-            return 0.5; // Empate por timeout
-        }
-        
-        function getAllMovesForSimBoard(simBoard, player) {
-            const moves = [];
-            
-            if (player === 'vertical') {
-                for (let col = 0; col < BOARD_SIZE; col++) {
-                    for (let row = 0; row < BOARD_SIZE - 1; row++) {
-                        if (simBoard[row][col] === null && simBoard[row + 1][col] === null) {
-                            const move = [{ row, col }];
-                            let r = row + 1;
-                            while (r < BOARD_SIZE && simBoard[r][col] === null) {
-                                move.push({ row: r, col });
-                                moves.push([...move]);
-                                r++;
-                            }
-                        }
-                    }
-                }
-            } else {
-                for (let row = 0; row < BOARD_SIZE; row++) {
-                    for (let col = 0; col < BOARD_SIZE - 1; col++) {
-                        if (simBoard[row][col] === null && simBoard[row][col + 1] === null) {
-                            const move = [{ row, col }];
-                            let c = col + 1;
-                            while (c < BOARD_SIZE && simBoard[row][c] === null) {
-                                move.push({ row, col: c });
-                                moves.push([...move]);
-                                c++;
-                            }
-                        }
-                    }
-                }
-            }
-            
-            return moves;
-        }
-        
-        // ===== Minimax Original =====
         
         function getBoardHash() {
             let hash = '';
@@ -1127,14 +835,9 @@
             const opponentPlayer = aiPlayer === 'vertical' ? 'horizontal' : 'vertical';
             const opponentMoves = getAllPossibleMoves(opponentPlayer).length;
             
-            // Se o oponente não tem jogadas, NÓS ganhamos! (porque ele não consegue jogar)
             if (opponentMoves === 0) return 1000;
-            // Se NÓS não temos jogadas, perdemos
             if (aiMoves === 0) return -1000;
             
-            // Estratégia: Queremos MAXIMIZAR as jogadas do oponente e MINIMIZAR as nossas
-            // Porque queremos que ele seja FORÇADO a fazer a última jogada
-            // Quanto mais jogadas ele tiver, mais provável é que ele fique preso
             return (opponentMoves * 2) - aiMoves;
         }
         
@@ -1155,13 +858,7 @@
             
             const currentPlayerInSim = isMaximizing ? aiPlayer : (aiPlayer === 'vertical' ? 'horizontal' : 'vertical');
             
-            // Terminal: se o jogador atual não tem jogadas disponíveis
             if (!hasMovesAvailable(currentPlayerInSim)) {
-                // O jogador atual não consegue jogar, então o ANTERIOR fez a última jogada e PERDE
-                // Se estamos a maximizar (turno da IA) e a IA não consegue jogar,
-                // significa que o oponente fez a última jogada e PERDEU, então IA GANHOU
-                // Se estamos a minimizar (turno do oponente) e ele não consegue jogar,
-                // significa que a IA fez a última jogada e PERDEU, então oponente GANHOU
                 const value = isMaximizing ? 1000 : -1000;
                 if (gameMode === 'ai-medium') {
                     transpositionTable.set(ttKey, { value, depth });
@@ -1215,7 +912,6 @@
         function getBestMove() {
             searchStartTime = Date.now();
             
-            // Minimax com TT para os níveis de IA
             if (gameMode === 'ai-medium') {
                 transpositionTable.clear();
             }
@@ -1265,8 +961,6 @@
             return bestMove;
         }
         
-        // ============ FIM ALGORITMOS ============
-        
         function aiMove() {
             if (canSwap && Math.random() < 0.3) {
                 swapPlayers();
@@ -1283,7 +977,6 @@
                     selectedCells = bestMove;
                     confirmMove();
                 } else {
-                    // IA não tem jogadas, ela perde
                     endGame(aiPlayer);
                 }
                 
@@ -1292,27 +985,21 @@
             }, 300);
         }
         
-        // ============ FIM ALGORITMOS ============
-        
         function isGameOver() {
             const nextPlayer = currentPlayer === 'vertical' ? 'horizontal' : 'vertical';
             return !hasMovesAvailable(nextPlayer);
         }
         
         function endGame(loser = null) {
-            // Se não foi especificado quem perdeu, determinar baseado no currentPlayer
             if (loser === null) {
                 loser = currentPlayer;
             }
             
-            // Determinar qual jogador perdeu baseado na orientação e se houve troca
             let loserText, winnerText;
             if (orientationSwapped) {
-                // Após troca: vertical = 2º jogador, horizontal = 1º jogador
                 loserText = loser === 'vertical' ? '2º Jogador' : '1º Jogador';
                 winnerText = loser === 'vertical' ? '1º Jogador' : '2º Jogador';
             } else {
-                // Antes da troca: vertical = 1º jogador, horizontal = 2º jogador
                 loserText = loser === 'vertical' ? '1º Jogador' : '2º Jogador';
                 winnerText = loser === 'vertical' ? '2º Jogador' : '1º Jogador';
             }
@@ -1338,13 +1025,10 @@
         }
         
         function updateDisplay() {
-            // Determinar qual jogador baseado na orientação e se houve troca
             let playerText;
             if (orientationSwapped) {
-                // Após troca: vertical = 2º jogador, horizontal = 1º jogador
                 playerText = currentPlayer === 'vertical' ? '2º Jogador' : '1º Jogador';
             } else {
-                // Antes da troca: vertical = 1º jogador, horizontal = 2º jogador
                 playerText = currentPlayer === 'vertical' ? '1º Jogador' : '2º Jogador';
             }
             
@@ -1372,7 +1056,7 @@
             moveCount = 0;
             canSwap = false;
             isAiThinking = false;
-            orientationSwapped = false; // Reset da flag
+            orientationSwapped = false;
             document.getElementById('gameOver').classList.remove('show');
             document.getElementById('swapBtn').style.display = 'none';
             document.getElementById('aiThinking').style.display = 'none';
